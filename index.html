@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MovePalooza Cancún 2026</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00C8E8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Lilita+One&family=Titan+One&family=Nunito:wght@800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky:#00C8E8; --pink:#FF1F6B; --green:#39FF14; --yellow:#FFE600;
+  --orange:#FF6B00; --red:#E8202A; --black:#0A0A0A; --white:#FFFFFF; --cream:#FFF5DC;
+  --fD:'Lilita One',cursive; --fH:'Titan One',cursive; --fL:'Black Han Sans',sans-serif;
+  --fB:'Nunito',sans-serif; --fN:'Bebas Neue',cursive;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--sky);color:var(--black);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--black);border-bottom:4px solid var(--green);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:54px;gap:10px}
+.nav-logo{font-family:'Lilita One',cursive;font-size:20px;color:var(--sky);white-space:nowrap}
+.nav-logo em{color:var(--green);font-style:normal}
+.nav-links{display:flex;gap:2px;list-style:none;flex-wrap:wrap;justify-content:flex-end}
+.nav-links a{font-family:'Black Han Sans',sans-serif;font-size:11px;color:var(--white);text-decoration:none;padding:5px 9px;border-radius:4px;letter-spacing:.5px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover{background:var(--green);color:var(--black);transform:translateY(-2px)}
+.hbg{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px;background:none;border:none}
+.hbg span{display:block;width:22px;height:2px;background:var(--white);border-radius:1px}
+@media(max-width:640px){
+  .hbg{display:flex}
+  .nav-links{position:fixed;top:54px;left:0;right:0;background:var(--black);flex-direction:column;padding:14px;gap:4px;transform:translateY(-110%);transition:transform .3s;border-bottom:3px solid var(--green);z-index:999}
+  .nav-links.open{transform:translateY(0)}
+  .nav-links a{font-size:15px;padding:10px 12px}
+}
+
+/* HERO */
+#hero{min-height:100vh;background:var(--sky);padding-top:54px;display:flex;flex-direction:column;align-items:center;overflow:hidden;position:relative}
+.hero-bar{width:100%;background:var(--red);padding:12px 16px;text-align:center;border-top:4px solid var(--black);border-bottom:4px solid var(--black)}
+.hero-bar-txt{font-family:'Black Han Sans',sans-serif;font-size:clamp(16px,4.5vw,30px);color:var(--white);letter-spacing:2px;text-shadow:2px 2px 0 var(--black)}
+.hero-bar-txt b{display:inline-block;width:7px;height:7px;background:var(--yellow);border-radius:50%;margin:0 10px;vertical-align:middle;border:2px solid var(--black)}
+.hero-collage{flex:1;width:100%;max-width:680px;position:relative;display:flex;flex-direction:column;align-items:center;padding:24px 16px 10px}
+.blob{position:absolute;top:0;left:50%;transform:translateX(-50%);width:88%;max-width:540px;height:400px;background:#FF9ECC;border-radius:42% 58% 54% 46%/46% 42% 58% 54%;border:4px solid var(--black);z-index:0}
+.deco{position:absolute;z-index:1;pointer-events:none;animation:spin 10s linear infinite}
+.deco.rev{animation-direction:reverse;animation-duration:14s}
+.deco.wb{animation:wobble 3s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes wobble{0%,100%{transform:scale(1)}50%{transform:scale(1.12) rotate(6deg)}}
+.hero-ticket{position:absolute;top:10px;right:10px;z-index:10}
+.admit-box{background:var(--cream);border:3px solid var(--black);border-radius:8px;padding:8px 12px;text-align:center;box-shadow:3px 3px 0 var(--black);cursor:pointer;transition:transform .15s;user-select:none}
+.admit-box:hover{transform:scale(1.06) rotate(-2deg)}
+.admit-box .a1{font-family:'Black Han Sans',sans-serif;font-size:7px;letter-spacing:2px;opacity:.5}
+.admit-box .a2{font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--red);line-height:1.1}
+.admit-box .a3{font-family:'Black Han Sans',sans-serif;font-size:8px;opacity:.35;margin-top:2px}
+.hero-title{position:relative;z-index:2;text-align:center;margin-top:16px}
+.hero-title .ht-line{display:block;font-family:'Titan One',cursive;font-size:clamp(68px,19vw,155px);line-height:.85;letter-spacing:-2px;text-transform:uppercase;color:var(--black)}
+.cancun-badge{display:inline-block;background:var(--black);color:var(--white);font-family:'Black Han Sans',sans-serif;font-size:clamp(13px,3.5vw,26px);letter-spacing:6px;padding:5px 22px;border-radius:4px;margin-top:8px;position:relative;z-index:2}
+.hero-yr{font-family:'Black Han Sans',sans-serif;font-size:clamp(36px,9vw,72px);color:var(--sky);background:var(--black);padding:2px 14px;border-radius:4px;position:absolute;bottom:20px;right:8px;z-index:3;letter-spacing:3px}
+.hero-bottom{width:100%;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:18px}
+
+/* COUNTDOWN */
+.cd-strip{width:100%;max-width:580px;display:flex;border:4px solid var(--black);border-radius:14px;overflow:hidden;box-shadow:6px 6px 0 var(--black)}
+.cd-u{flex:1;padding:14px 6px;text-align:center;border-right:3px solid var(--black)}
+.cd-u:last-child{border-right:none}
+.cd-u:nth-child(1){background:var(--pink)}
+.cd-u:nth-child(2){background:var(--green)}
+.cd-u:nth-child(3){background:var(--yellow)}
+.cd-u:nth-child(4){background:var(--sky)}
+.cd-n{display:block;font-family:'Titan One',cursive;font-size:clamp(30px,7.5vw,50px);color:var(--white);-webkit-text-stroke:2px var(--black);paint-order:stroke fill;line-height:1}
+.cd-u:nth-child(2) .cd-n,.cd-u:nth-child(3) .cd-n{color:var(--black);-webkit-text-stroke:0}
+.cd-l{display:block;font-family:'Black Han Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-top:3px;color:var(--black);opacity:.65}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'Black Han Sans',sans-serif;letter-spacing:1.5px;padding:14px 36px;border:4px solid var(--black);border-radius:100px;text-decoration:none;cursor:pointer;box-shadow:5px 5px 0 var(--black);transition:all .15s;text-transform:uppercase;font-size:clamp(14px,3vw,20px)}
+.btn:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--black)}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--black)}
+.btn-g{background:var(--green);color:var(--black)}
+.btn-p{background:var(--pink);color:var(--white)}
+.btn-y{background:var(--yellow);color:var(--black)}
+.btn-b{background:var(--black);color:var(--white)}
+.btn-o{background:var(--orange);color:var(--white)}
+.btn-s{background:var(--sky);color:var(--black)}
+
+/* SECTIONS */
+.sw{padding:clamp(44px,7vw,76px) clamp(14px,4vw,36px);position:relative}
+.sh{text-align:center;margin-bottom:36px}
+.sl{display:inline-block;background:var(--black);color:var(--white);font-family:'Black Han Sans',sans-serif;font-size:11px;letter-spacing:3px;padding:5px 16px;border-radius:100px;margin-bottom:10px;text-transform:uppercase}
+.st{font-family:'Titan One',cursive;font-size:clamp(44px,9.5vw,84px);line-height:.9;text-transform:uppercase;letter-spacing:-1px}
+
+/* LINEUP */
+#lineup{background:var(--sky);border-top:4px solid var(--black)}
+.lt{max-width:1100px;margin:0 auto;border:4px solid var(--black);border-radius:18px;overflow:hidden;box-shadow:8px 8px 0 var(--black)}
+.lh{display:grid;grid-template-columns:70px repeat(4,1fr);border-bottom:4px solid var(--black)}
+.lhc{padding:14px 8px;text-align:center;font-family:'Black Han Sans',sans-serif;font-size:clamp(11px,2vw,17px);letter-spacing:1px;text-transform:uppercase;border-right:3px solid var(--black);color:var(--white)}
+.lhc:last-child{border-right:none}
+.lhc:nth-child(1){background:var(--black);color:var(--sky)}
+.lhc:nth-child(2){background:var(--green);color:var(--black)}
+.lhc:nth-child(3){background:var(--sky);color:var(--black)}
+.lhc:nth-child(4){background:var(--pink)}
+.lhc:nth-child(5){background:var(--orange)}
+.lr{display:grid;grid-template-columns:70px repeat(4,1fr);border-bottom:2px solid rgba(0,0,0,.12);min-height:56px}
+.lr:last-child{border-bottom:none}
+.lt-time{display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:clamp(14px,2.5vw,20px);letter-spacing:1px;background:var(--black);color:var(--sky);border-right:3px solid var(--black)}
+.lc{display:flex;align-items:center;justify-content:center;padding:8px;text-align:center;border-right:2px solid rgba(0,0,0,.1)}
+.lc:last-child{border-right:none}
+.cj{background:rgba(57,255,20,.12)}
+.ca{background:rgba(0,200,232,.18)}
+.cp{background:rgba(255,31,107,.08)}
+.cl{background:rgba(255,107,0,.12)}
+.ep{display:inline-flex;flex-direction:column;align-items:center;gap:1px;background:var(--white);border:2px solid var(--black);border-radius:9px;padding:5px 8px;box-shadow:2px 2px 0 var(--black);cursor:default;transition:transform .15s;max-width:130px}
+.ep:hover{transform:scale(1.06) rotate(-1deg)}
+.ep .ei{font-size:16px}
+.ep .en{font-family:'Black Han Sans',sans-serif;font-size:clamp(8px,1.4vw,11px);letter-spacing:.4px;text-transform:uppercase;line-height:1.2}
+.ep .et{font-family:'Bebas Neue',cursive;font-size:clamp(9px,1.4vw,12px);color:rgba(0,0,0,.45);letter-spacing:1px}
+.ep.eg{background:var(--green)}.ep.ep2{background:var(--pink);color:var(--white)}.ep.ey{background:var(--yellow)}.ep.es{background:var(--sky)}.ep.eo{background:var(--orange);color:var(--white)}.ep.ec{background:var(--cream)}
+.dj{background:var(--black);color:var(--sky);border-radius:9px;padding:7px 10px;font-family:'Black Han Sans',sans-serif;font-size:clamp(12px,2.2vw,17px);letter-spacing:2px;border:2px solid var(--black);text-align:center;box-shadow:3px 3px 0 rgba(0,0,0,.3)}
+
+/* MAPA */
+#mapa{background:var(--green);border-top:4px solid var(--black)}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:680px;margin:0 auto}
+.mz{border:4px solid var(--black);border-radius:14px;padding:22px 14px;text-align:center;cursor:pointer;transition:all .15s;box-shadow:5px 5px 0 var(--black)}
+.mz:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--black)}
+.mz:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--black)}
+.mi{font-size:clamp(34px,7.5vw,52px);display:block;margin-bottom:8px}
+.mn{font-family:'Black Han Sans',sans-serif;font-size:clamp(14px,3.5vw,22px);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px}
+.md{font-size:clamp(10px,1.8vw,13px);font-weight:800;opacity:.72}
+.mz-j{background:var(--white);grid-column:1;grid-row:1}
+.mz-a{background:var(--sky);grid-column:2;grid-row:1}
+.mz-e{background:var(--pink);color:var(--white);grid-column:1/3;grid-row:2}
+.mz-p{background:var(--orange);color:var(--white);grid-column:1;grid-row:3}
+.mz-f{background:var(--yellow);grid-column:2;grid-row:3}
+.ds{margin:22px auto 0;max-width:680px;background:var(--black);color:var(--white);border:4px solid var(--black);border-radius:100px;padding:13px 26px;font-family:'Black Han Sans',sans-serif;font-size:clamp(12px,2.5vw,17px);letter-spacing:2px;text-align:center;text-transform:uppercase;box-shadow:5px 5px 0 rgba(0,0,0,.2)}
+.ds em{color:var(--green);font-style:normal}
+
+/* GALERÍA */
+#galeria{background:var(--pink);border-top:4px solid var(--black)}
+#galeria .st{color:var(--white);-webkit-text-stroke:2px var(--black);paint-order:stroke fill}
+.ab{max-width:540px;margin:0 auto;background:var(--white);border:4px solid var(--black);border-radius:18px;padding:32px;box-shadow:8px 8px 0 var(--black);text-align:center}
+.ab h3{font-family:'Black Han Sans',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}
+.ab p{font-weight:800;opacity:.7;margin-bottom:22px;font-size:14px;line-height:1.5}
+.cr{display:flex;gap:8px;margin-bottom:14px}
+.cr input{flex:1;border:3px solid var(--black);border-radius:10px;padding:13px 14px;font-family:'Black Han Sans',sans-serif;font-size:18px;letter-spacing:4px;text-align:center;text-transform:uppercase;background:var(--cream);outline:none;transition:border-color .2s}
+.cr input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,31,107,.2)}
+.dv{display:flex;align-items:center;gap:10px;margin:14px 0;font-family:'Black Han Sans',sans-serif;font-size:12px;letter-spacing:2px;opacity:.4}
+.dv::before,.dv::after{content:'';flex:1;height:2px;background:currentColor}
+.gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:26px}
+.gi{border:4px solid var(--black);border-radius:12px;overflow:hidden;aspect-ratio:1;cursor:pointer;position:relative;box-shadow:4px 4px 0 var(--black);transition:all .15s;background:var(--cream)}
+.gi:hover{transform:translate(-2px,-2px) rotate(-1deg);box-shadow:6px 6px 0 var(--black)}
+.gi img{width:100%;height:100%;object-fit:cover;display:block}
+.go{position:absolute;inset:0;background:rgba(0,0,0,.78);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;opacity:0;transition:opacity .2s;padding:10px}
+.gi:hover .go{opacity:1}
+.gb{width:100%;padding:7px;border:2px solid var(--black);border-radius:7px;font-family:'Black Han Sans',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:transform .15s;box-shadow:2px 2px 0 var(--black)}
+.gb:hover{transform:translateY(-2px)}
+.gb.gbd{background:var(--green);color:var(--black)}
+.gb.gbp{background:var(--yellow);color:var(--black)}
+
+/* JUEGOS */
+#juegos{background:var(--yellow);border-top:4px solid var(--black)}
+#juegos .st{-webkit-text-stroke:2px var(--black);paint-order:stroke fill}
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:10px;max-width:860px;margin:0 auto 20px}
+.rc{background:var(--white);border:4px solid var(--black);border-radius:14px;padding:18px 10px;text-align:center;cursor:pointer;box-shadow:4px 4px 0 var(--black);transition:all .15s}
+.rc:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black)}
+.rc.sel{background:var(--green);transform:translate(-3px,-3px) rotate(-2deg);box-shadow:7px 7px 0 var(--black)}
+.rc:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--black)}
+.re{font-size:40px;display:block;margin-bottom:6px}
+.rn{font-family:'Black Han Sans',sans-serif;font-size:13px;letter-spacing:.4px;text-transform:uppercase;display:block}
+.rs{font-size:10px;opacity:.5;margin-top:3px;font-weight:800}
+.rta{max-width:860px;margin:0 auto;background:var(--white);border:4px solid var(--black);border-radius:14px;padding:18px;box-shadow:6px 6px 0 var(--black);display:none}
+.tl{display:flex;align-items:center;height:48px;background:var(--cream);border:2px solid var(--black);border-radius:100px;margin-bottom:8px;position:relative;overflow:hidden}
+.tl::before{content:'🏁';position:absolute;right:14px;font-size:18px}
+.lr2{position:absolute;left:14px;font-size:24px;transition:left .08s linear;z-index:2}
+.ll{position:absolute;right:42px;font-family:'Black Han Sans',sans-serif;font-size:10px;letter-spacing:.4px;opacity:.35;z-index:1}
+.rres{display:none;text-align:center;padding:18px}
+.rr-i{font-size:56px;display:block;margin-bottom:8px}
+.rr-t{font-family:'Black Han Sans',sans-serif;font-size:22px;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+
+/* MENSAJES */
+#mensajes{background:var(--cream);border-top:4px solid var(--black)}
+.mfb{max-width:680px;margin:0 auto 28px;background:var(--white);border:4px solid var(--black);border-radius:18px;padding:28px;box-shadow:6px 6px 0 var(--black)}
+.mfb h3{font-family:'Black Han Sans',sans-serif;font-size:18px;letter-spacing:1px;text-transform:uppercase;margin-bottom:18px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:480px){.fg{grid-template-columns:1fr}}
+.ff label{display:block;font-family:'Black Han Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;opacity:.65}
+.ff input,.ff textarea,.ff select{width:100%;border:3px solid var(--black);border-radius:9px;padding:11px 13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;background:var(--cream);outline:none;transition:border-color .2s;resize:none}
+.ff input:focus,.ff textarea:focus,.ff select:focus{border-color:var(--pink)}
+.mb{max-width:880px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:14px}
+.mn2{border:3px solid var(--black);border-radius:11px;padding:16px;position:relative;box-shadow:4px 4px 0 var(--black);transform:rotate(var(--r));transition:all .15s;cursor:default}
+.mn2:hover{transform:rotate(0deg) scale(1.04);box-shadow:6px 6px 0 var(--black);z-index:5}
+.ne{font-size:20px;margin-bottom:7px;display:block}
+.nf{font-family:'Black Han Sans',sans-serif;font-size:10px;letter-spacing:1px;opacity:.58;margin-bottom:3px;text-transform:uppercase}
+.nt{font-family:'Black Han Sans',sans-serif;font-size:13px;margin-bottom:7px}
+.ntx{font-weight:800;font-size:12px;line-height:1.5}
+
+/* TICKETS */
+#tickets{background:var(--black);border-top:4px solid var(--green)}
+#tickets .st{color:var(--white);-webkit-text-stroke:2px var(--green);paint-order:stroke fill}
+#tickets .sl{background:var(--green);color:var(--black)}
+.tg{max-width:580px;margin:0 auto;text-align:center}
+.ti2{width:100%;border:4px solid var(--green);border-radius:11px;padding:15px 18px;font-family:'Black Han Sans',sans-serif;font-size:20px;letter-spacing:3px;text-align:center;text-transform:uppercase;background:rgba(57,255,20,.06);color:var(--white);outline:none;margin-bottom:14px;transition:border-color .2s}
+.ti2:focus{border-color:var(--yellow)}
+.ti2::placeholder{opacity:.3}
+.tc{background:var(--cream);border:4px solid var(--black);border-radius:18px;padding:26px;margin:22px 0;box-shadow:6px 6px 0 var(--green);position:relative;overflow:hidden}
+.tc::after{content:'';position:absolute;top:0;bottom:0;left:66%;width:3px;border-left:3px dashed rgba(0,0,0,.18)}
+.tci{display:flex;align-items:center;gap:18px}
+.tl2{flex:1;text-align:left}
+.tr{width:110px;text-align:center;flex-shrink:0}
+.tlo{font-family:'Titan One',cursive;font-size:26px;color:var(--black);line-height:1;text-transform:uppercase}
+.tsub{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:4px;color:var(--sky);-webkit-text-stroke:1px var(--black)}
+.tdt{font-family:'Black Han Sans',sans-serif;font-size:11px;letter-spacing:1.5px;margin-top:9px;opacity:.55;text-transform:uppercase}
+.tname{font-family:'Black Han Sans',sans-serif;font-size:20px;letter-spacing:1px;margin-top:3px;color:var(--pink);text-transform:uppercase}
+.tnum{font-size:9px;opacity:.35;margin-top:7px;letter-spacing:2px;font-family:monospace}
+.tbi{font-size:48px;display:block;margin-bottom:5px}
+.tac{font-family:'Black Han Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.55}
+.bc{display:flex;gap:2px;justify-content:flex-start;margin-top:9px}
+.bc span{display:block;background:var(--black);width:2px;opacity:.45}
+
+/* MERCH */
+#merch{background:var(--orange);border-top:4px solid var(--black)}
+#merch .st{color:var(--white);-webkit-text-stroke:2px var(--black);paint-order:stroke fill}
+.mrg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;max-width:960px;margin:0 auto}
+.mrc{background:var(--white);border:4px solid var(--black);border-radius:16px;overflow:hidden;box-shadow:6px 6px 0 var(--black);transition:all .15s;cursor:pointer}
+.mrc:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--black)}
+.mrc:active{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--black)}
+.mrci{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:80px;border-bottom:3px solid var(--black);padding:18px}
+.mrci2{padding:16px}
+.mrt{font-family:'Black Han Sans',sans-serif;font-size:17px;letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+.mrd{font-size:12px;font-weight:800;opacity:.58;margin-bottom:13px}
+
+/* BACKSTAGE */
+#backstage{background:var(--cream);border-top:4px solid var(--black)}
+.bg2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:860px;margin:0 auto}
+.bi{border:4px solid var(--black);border-radius:12px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:46px;cursor:pointer;box-shadow:4px 4px 0 var(--black);transition:all .15s;position:relative;overflow:hidden}
+.bi.big{grid-column:1/3;aspect-ratio:2/1;font-size:64px}
+.bi:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black)}
+.bi:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--black)}
+.bi:nth-child(1){background:var(--pink)}.bi:nth-child(2){background:var(--sky)}.bi:nth-child(3){background:var(--green)}.bi:nth-child(4){background:var(--yellow)}.bi:nth-child(5){background:var(--orange)}.bi:nth-child(6){background:#c8b0ff}
+.bil{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);background:var(--black);color:var(--white);font-family:'Black Han Sans',sans-serif;font-size:10px;letter-spacing:1px;padding:3px 9px;border-radius:100px;white-space:nowrap;opacity:0;transition:opacity .2s}
+.bi:hover .bil{opacity:1}
+
+/* KIDS ZONE */
+#kidszone{background:var(--green);border-top:4px solid var(--black)}
+.kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:12px;max-width:900px;margin:0 auto}
+.kc{background:var(--white);border:4px solid var(--black);border-radius:16px;padding:26px 16px;text-align:center;cursor:pointer;box-shadow:5px 5px 0 var(--black);transition:all .15s}
+.kc:hover{transform:translate(-3px,-3px) rotate(-1deg);box-shadow:8px 8px 0 var(--black)}
+.kc:nth-child(even):hover{transform:translate(-3px,-3px) rotate(1deg)}
+.kc:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--black)}
+.ki{font-size:50px;display:block;margin-bottom:12px}
+.kn{font-family:'Black Han Sans',sans-serif;font-size:15px;letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+.kd{font-size:12px;font-weight:800;opacity:.58;margin-bottom:14px;line-height:1.5}
+
+/* RETOS */
+#retos{background:var(--sky);border-top:4px solid var(--black)}
+.rtg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;max-width:950px;margin:0 auto}
+.rtc{background:var(--white);border:4px solid var(--black);border-radius:14px;padding:20px 14px;text-align:center;box-shadow:4px 4px 0 var(--black);transition:all .15s;cursor:pointer;position:relative;overflow:hidden}
+.rtc:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black)}
+.rtc.ul{background:var(--green)}
+.rtc.lk{opacity:.6}
+.rtc-i{font-size:38px;display:block;margin-bottom:7px}
+.rtc-n{font-family:'Black Han Sans',sans-serif;font-size:15px;letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+.rtc-d{font-size:11px;font-weight:800;opacity:.65;margin-bottom:11px;line-height:1.5}
+.rtb{display:inline-block;border:2px solid var(--black);border-radius:100px;padding:3px 11px;font-family:'Black Han Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.rtb-d{background:var(--black);color:var(--green)}.rtb-l{background:rgba(0,0,0,.09)}
+.lic{position:absolute;top:10px;right:10px;font-size:15px;opacity:.28}
+
+/* FOOTER */
+footer{background:var(--black);border-top:4px solid var(--green);padding:36px 16px;text-align:center}
+.fl{font-family:'Titan One',cursive;font-size:clamp(38px,9vw,76px);color:var(--white);-webkit-text-stroke:2px var(--green);paint-order:stroke fill;text-transform:uppercase;line-height:.9;margin-bottom:5px}
+.fs{font-family:'Bebas Neue',cursive;font-size:17px;letter-spacing:8px;color:var(--sky);margin-bottom:18px;text-transform:uppercase}
+.fsp{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.fsc{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.13);border-radius:100px;padding:7px 16px;font-family:'Black Han Sans',sans-serif;font-size:11px;letter-spacing:1px;color:var(--white);opacity:.65}
+.fc{font-size:10px;opacity:.22;letter-spacing:1px;font-family:'Black Han Sans',sans-serif;text-transform:uppercase;color:var(--white);margin-top:14px}
+
+/* MODAL */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;padding:16px}
+.mbg.active{display:flex}
+.mbox{background:var(--white);border:4px solid var(--black);border-radius:18px;padding:32px;max-width:460px;width:100%;text-align:center;box-shadow:8px 8px 0 var(--black);animation:mIn .3s cubic-bezier(.34,1.56,.64,1);position:relative}
+@keyframes mIn{from{transform:scale(.7) rotate(-3deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.mcb{position:absolute;top:13px;right:13px;background:var(--black);color:var(--white);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;font-family:'Black Han Sans',sans-serif}
+
+/* TOASTS */
+#ts{position:fixed;bottom:18px;right:18px;z-index:99999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.tos{background:var(--black);color:var(--white);border:3px solid var(--green);border-radius:11px;padding:11px 16px;font-family:'Black Han Sans',sans-serif;font-size:13px;letter-spacing:.4px;box-shadow:4px 4px 0 var(--green);animation:tIn .3s cubic-bezier(.34,1.56,.64,1);max-width:270px}
+@keyframes tIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .5s ease,transform .5s cubic-bezier(.34,1.2,.64,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--black)}::-webkit-scrollbar-thumb{background:var(--green);border-radius:2px}
+::selection{background:var(--pink);color:var(--white)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Move<em>Palooza</em></div>
+  <button class="hbg" onclick="document.getElementById('nl').classList.toggle('open')" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nl">
+    <li><a href="#lineup" onclick="document.getElementById('nl').classList.remove('open')">LINEUP</a></li>
+    <li><a href="#mapa" onclick="document.getElementById('nl').classList.remove('open')">MAPA</a></li>
+    <li><a href="#galeria" onclick="document.getElementById('nl').classList.remove('open')">FOTOS</a></li>
+    <li><a href="#juegos" onclick="document.getElementById('nl').classList.remove('open')">JUEGOS</a></li>
+    <li><a href="#mensajes" onclick="document.getElementById('nl').classList.remove('open')">MENSAJES</a></li>
+    <li><a href="#tickets" onclick="document.getElementById('nl').classList.remove('open')">TICKET</a></li>
+    <li><a href="#merch" onclick="document.getElementById('nl').classList.remove('open')">MERCH</a></li>
+    <li><a href="#kidszone" onclick="document.getElementById('nl').classList.remove('open')">KIDS</a></li>
+    <li><a href="#retos" onclick="document.getElementById('nl').classList.remove('open')">RETOS</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bar">
+    <div class="hero-bar-txt">Sábado 25 Abril<b></b>Jardín Victoria<b></b>Cancún</div>
+  </div>
+  <div class="hero-collage">
+    <div class="blob"></div>
+    <!-- Deco shapes -->
+    <svg class="deco" style="top:4%;left:2%;width:56px" viewBox="0 0 60 60"><polygon points="30,2 36,22 58,22 40,36 47,58 30,44 13,58 20,36 2,22 24,22" fill="#FFE600" stroke="#0A0A0A" stroke-width="2.5"/></svg>
+    <svg class="deco rev" style="top:8%;right:4%;width:42px" viewBox="0 0 60 60"><polygon points="30,2 36,22 58,22 40,36 47,58 30,44 13,58 20,36 2,22 24,22" fill="#39FF14" stroke="#0A0A0A" stroke-width="2.5"/></svg>
+    <svg class="deco" style="bottom:18%;left:5%;width:34px;animation-duration:7s" viewBox="0 0 60 60"><polygon points="30,2 36,22 58,22 40,36 47,58 30,44 13,58 20,36 2,22 24,22" fill="#FF1F6B" stroke="#0A0A0A" stroke-width="2.5"/></svg>
+    <svg class="deco wb" style="bottom:22%;right:3%;width:46px" viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="#00C8E8" stroke="#0A0A0A" stroke-width="2.5"/></svg>
+    <!-- Ticket admit one -->
+    <div class="hero-ticket" onclick="document.getElementById('tickets').scrollIntoView({behavior:'smooth'})">
+      <div class="admit-box">
+        <div class="a1">★ FESTIVAL OFICIAL ★</div>
+        <div class="a2">ADMIT<br>ONE</div>
+        <div class="a3">604760</div>
+      </div>
+    </div>
+    <!-- Title -->
+    <div class="hero-title">
+      <span class="ht-line">MoVE</span>
+      <span class="ht-line">PaLo</span>
+      <span class="ht-line">OZa</span>
+      <div class="cancun-badge">CANCÚN</div>
+    </div>
+    <div class="hero-yr">2026</div>
+  </div>
+  <!-- Countdown + CTA -->
+  <div class="hero-bottom">
+    <div class="cd-strip" id="cd">
+      <div class="cd-u"><span class="cd-n" id="cd-d">05</span><span class="cd-l">Días</span></div>
+      <div class="cd-u"><span class="cd-n" id="cd-h">00</span><span class="cd-l">Horas</span></div>
+      <div class="cd-u"><span class="cd-n" id="cd-m">00</span><span class="cd-l">Mins</span></div>
+      <div class="cd-u"><span class="cd-n" id="cd-s">00</span><span class="cd-l">Segs</span></div>
+    </div>
+    <a href="#lineup" class="btn btn-g">🎪 ENTRAR AL FESTIVAL</a>
+  </div>
+</section>
+
+<!-- LINEUP -->
+<section id="lineup" class="sw">
+  <div class="sh rv"><div class="sl">📅 SÁBADO 25 ABRIL</div><h2 class="st">LINEUP<br>OFICIAL</h2></div>
+  <div class="lt rv">
+    <div class="lh">
+      <div class="lhc">HRS</div><div class="lhc">🌿 JARDÍN</div><div class="lhc">💧 ALBERCA</div><div class="lhc">🎤 ESCENARIO</div><div class="lhc">🌴 PALAPA</div>
+    </div>
+    <div class="lr">
+      <div class="lt-time">15</div>
+      <div class="lc cj"><div class="ep eg"><span class="ei">🎉</span><span class="en">RECEPCIÓN</span><span class="et">15:00</span></div></div>
+      <div class="lc ca"><div class="ep es"><span class="ei">🏊</span><span class="en">CHAPUZÓN</span><span class="et">15:15</span></div></div>
+      <div class="lc cp"><div class="dj">🎧 DJ<br><span style="font-size:10px;opacity:.7;letter-spacing:1px">16:00–21:00</span></div></div>
+      <div class="lc cl"><div class="ep ec"><span class="ei">🗣️</span><span class="en">CHISMECITO</span><span class="et">ALL DAY</span></div></div>
+    </div>
+    <div class="lr">
+      <div class="lt-time">16</div>
+      <div class="lc cj"></div><div class="lc ca"></div><div class="lc cp"></div>
+      <div class="lc cl"><div class="ep eo"><span class="ei">🌮</span><span class="en">TAQUITOS</span><span class="et">16:30</span></div></div>
+    </div>
+    <div class="lr">
+      <div class="lt-time">17</div>
+      <div class="lc cj"><div class="ep eg"><span class="ei">⚽</span><span class="en">RETAS FUT</span><span class="et">17:00</span></div></div>
+      <div class="lc ca"></div>
+      <div class="lc cp"><div class="ep ep2"><span class="ei">🎨</span><span class="en">MANUALIDADES</span><span class="et">17:30</span></div></div>
+      <div class="lc cl"><div class="ep ec"><span class="ei">🍿</span><span class="en">SNACKS</span><span class="et">∞</span></div></div>
+    </div>
+    <div class="lr">
+      <div class="lt-time">18</div>
+      <div class="lc cj"></div>
+      <div class="lc ca"><div class="ep es"><span class="ei">🎲</span><span class="en">JUEGOS Y CONCURSOS</span><span class="et">18:00</span></div></div>
+      <div class="lc cp"><div class="ep ep2"><span class="ei">💃</span><span class="en">BAILE</span><span class="et">18:30</span></div></div>
+      <div class="lc cl"><div class="ep ec"><span class="ei">💧</span><span class="en">HIDRATACIÓN</span><span class="et">ALL</span></div></div>
+    </div>
+    <div class="lr">
+      <div class="lt-time">19</div>
+      <div class="lc cj"><div class="ep eg"><span class="ei">🎯</span><span class="en">RETOS Y ACTIVIDADES</span><span class="et">19:00</span></div></div>
+      <div class="lc ca"></div><div class="lc cp"></div><div class="lc cl"></div>
+    </div>
+    <div class="lr">
+      <div class="lt-time">20</div>
+      <div class="lc cj"></div><div class="lc ca"></div>
+      <div class="lc cp"><div class="ep ey"><span class="ei">🎂</span><span class="en">¡EL PASTEL!</span><span class="et">20:00</span></div></div>
+      <div class="lc cl"></div>
+    </div>
+    <div class="lr">
+      <div class="lt-time">21+</div>
+      <div class="lc cj"></div><div class="lc ca"></div>
+      <div class="lc cp"><div class="ep ep2"><span class="ei">🔥</span><span class="en">MÁS BAILE Y DIVERSIÓN</span></div></div>
+      <div class="lc cl"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAPA -->
+<section id="mapa" class="sw">
+  <div class="sh rv"><div class="sl" style="background:var(--black)">🗺️ ORIENTACIÓN</div><h2 class="st">MAPA DEL<br>FESTIVAL</h2></div>
+  <div class="mg rv">
+    <div class="mz mz-j" onclick="toast('🌿 JARDÍN — Fútbol · Retos · Actividades')"><span class="mi">🌿⚽</span><span class="mn">JARDÍN</span><span class="md">Fútbol · Retos · Actividades</span></div>
+    <div class="mz mz-a" onclick="toast('💧 ALBERCA — Chapuzón · Juegos acuáticos')"><span class="mi">💧🏊</span><span class="mn">ALBERCA</span><span class="md">Chapuzón · Juegos · Concursos</span></div>
+    <div class="mz mz-e" onclick="toast('🎤 ESCENARIO — DJ + Baile + ¡Pastel!')"><span class="mi">🎤🎧💃</span><span class="mn">ESCENARIO PRINCIPAL</span><span class="md">DJ 16:00-21:00 · Baile · Manualidades · Pastel</span></div>
+    <div class="mz mz-p" onclick="toast('🌴 PALAPA — Taquitos · Snacks · Chismecito')"><span class="mi">🌴🌮</span><span class="mn">PALAPA</span><span class="md">Taquitos · Snacks · Hidratación</span></div>
+    <div class="mz mz-f" onclick="toast('📸 ZONA FOTOS — Fotógrafo profesional')"><span class="mi">📸✨</span><span class="mn">ZONA FOTOS</span><span class="md">Fotógrafo Pro · Photo Booth</span></div>
+  </div>
+  <div class="ds rv">✱ DRESS CODE: <em>CÓMODO</em> · TRAJE DE BAÑO · BLOQUEADOR</div>
+</section>
+
+<!-- GALERÍA -->
+<section id="galeria" class="sw">
+  <div class="sh rv"><div class="sl" style="background:var(--black)">📸 ACCESO EXCLUSIVO</div><h2 class="st">GALERÍA<br>PRIVADA</h2></div>
+  <div id="galLogin" class="rv">
+    <div class="ab">
+      <div style="font-size:52px;margin-bottom:14px">🔐</div>
+      <h3>ACCESO VIP</h3>
+      <p>Ingresa el código exclusivo que recibiste o usa el link privado enviado a tu WhatsApp</p>
+      <div class="cr">
+        <input type="text" id="gc" placeholder="CÓDIGO VIP" maxlength="8">
+        <button class="btn btn-p" onclick="chkCode()" style="white-space:nowrap;padding:13px 18px;font-size:15px">IR →</button>
+      </div>
+      <div class="dv">O</div>
+      <button class="btn btn-b" onclick="toast('📲 Revisa tu WhatsApp — link enviado al grupo privado')" style="width:100%;justify-content:center;font-size:14px">📲 NO TENGO CÓDIGO</button>
+    </div>
+  </div>
+  <div id="galContent" style="display:none" class="rv">
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="font-family:'Black Han Sans',sans-serif;font-size:20px;margin-bottom:7px;color:var(--white)">¡BIENVENID@ A LA GALERÍA! 🎉</div>
+      <p style="color:var(--white);opacity:.8;font-weight:800;margin-bottom:14px">Fotos disponibles 48 hrs después del evento</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-b" onclick="toast('⬇️ Descargando todas las fotos...')" style="font-size:13px;padding:12px 20px">⬇️ DESCARGAR TODAS</button>
+        <button class="btn btn-y" onclick="toast('🖨️ Abriendo impresión...')" style="font-size:13px;padding:12px 20px">🖨️ IMPRIMIR SELECCIÓN</button>
+      </div>
+    </div>
+    <div class="gg">
+      <div class="gi" onclick="openPhotoModal(this)">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--pink),#8b0030);display:flex;align-items:center;justify-content:center;font-size:60px">🎉</div>
+        <div class="go"><button class="gb gbd" onclick="event.stopPropagation();toast('⬇️ Descargando...')">⬇️ BAJAR</button><button class="gb gbp" onclick="event.stopPropagation();printPh()">🖨️ PRINT</button></div>
+      </div>
+      <div class="gi" onclick="openPhotoModal(this)">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--green),#0a6600);display:flex;align-items:center;justify-content:center;font-size:60px">🎂</div>
+        <div class="go"><button class="gb gbd" onclick="event.stopPropagation();toast('⬇️ Descargando...')">⬇️ BAJAR</button><button class="gb gbp" onclick="event.stopPropagation();printPh()">🖨️ PRINT</button></div>
+      </div>
+      <div class="gi" onclick="openPhotoModal(this)">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--sky),#006688);display:flex;align-items:center;justify-content:center;font-size:60px">💃</div>
+        <div class="go"><button class="gb gbd" onclick="event.stopPropagation();toast('⬇️ Descargando...')">⬇️ BAJAR</button><button class="gb gbp" onclick="event.stopPropagation();printPh()">🖨️ PRINT</button></div>
+      </div>
+      <div class="gi" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;border-style:dashed;cursor:default;background:rgba(255,255,255,.06)">
+        <span style="font-size:30px;color:var(--white)">📷</span>
+        <span style="font-size:10px;color:var(--white);opacity:.45;text-align:center;font-family:'Black Han Sans',sans-serif;letter-spacing:1px">FOTOS<br>POST-EVENTO</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JUEGOS -->
+<section id="juegos" class="sw">
+  <div class="sh rv"><div class="sl" style="background:var(--black)">🎮 KIDS ZONE</div><h2 class="st">¡A CORRER!</h2><p style="font-family:'Lilita One',cursive;font-size:17px;opacity:.65;margin-top:8px">Elige tu corredor y compite en el festival</p></div>
+  <div class="rg rv">
+    <div class="rc" onclick="pickR(this,'🦁','León',0.85)"><span class="re">🦁</span><span class="rn">LEÓN</span><span class="rs">⚡⚡⚡⚡⚡</span></div>
+    <div class="rc" onclick="pickR(this,'🐢','Turbo',0.45)"><span class="re">🐢</span><span class="rn">TURBO</span><span class="rs">⚡⚡⚡</span></div>
+    <div class="rc" onclick="pickR(this,'🦊','Zorro',0.75)"><span class="re">🦊</span><span class="rn">ZORRO</span><span class="rs">⚡⚡⚡⚡</span></div>
+    <div class="rc" onclick="pickR(this,'🐸','Rana',0.35)"><span class="re">🐸</span><span class="rn">RANA</span><span class="rs">⚡⚡</span></div>
+    <div class="rc" onclick="pickR(this,'🚀','Cohete',0.95)"><span class="re">🚀</span><span class="rn">COHETE</span><span class="rs">⚡⚡⚡⚡⚡</span></div>
+    <div class="rc" onclick="pickR(this,'🦄','Unicornio',0.65)"><span class="re">🦄</span><span class="rn">UNICORNIO</span><span class="rs">⚡⚡⚡</span></div>
+  </div>
+  <div style="text-align:center;margin:16px 0">
+    <button class="btn btn-b" id="rBtn" onclick="startRace()" disabled>🏁 ¡ARRANCAR!</button>
+  </div>
+  <div class="rta" id="rArea">
+    <div id="rLanes"></div>
+    <div class="rres" id="rRes">
+      <span class="rr-i" id="rIcon">🏆</span>
+      <div class="rr-t" id="rTxt">¡GANASTE!</div>
+      <button class="btn btn-b" onclick="resetRace()" style="font-size:14px;padding:11px 28px">🔄 OTRA VEZ</button>
+    </div>
+  </div>
+</section>
+
+<!-- MENSAJES -->
+<section id="mensajes" class="sw">
+  <div class="sh rv"><div class="sl">💌 LIBRO DE RECUERDOS</div><h2 class="st">MURO DE<br>MENSAJES</h2></div>
+  <div class="mfb rv">
+    <h3>✍️ FIRMA EL FESTIVAL</h3>
+    <div class="fg">
+      <div class="ff"><label>Tu nombre</label><input type="text" id="mF" placeholder="Mamá de Sebastián"></div>
+      <div class="ff"><label>Para quién</label><input type="text" id="mT" placeholder="Para los cumpleañeros"></div>
+    </div>
+    <div class="ff" style="margin-bottom:12px"><label>Tu mensaje</label><textarea id="mX" rows="3" placeholder="¡Qué fiesta tan increíble!..."></textarea></div>
+    <div class="fg">
+      <div class="ff"><label>Color de nota</label>
+        <select id="mC">
+          <option value="y">Amarillo ⭐</option><option value="p">Rosa 🌸</option>
+          <option value="s">Azul 💙</option><option value="g">Verde 🌿</option><option value="o">Naranja 🍊</option>
+        </select>
+      </div>
+      <div class="ff"><label>Emoji</label>
+        <select id="mE">
+          <option value="🌟">🌟 Estrella</option><option value="❤️">❤️ Corazón</option>
+          <option value="🎉">🎉 Party</option><option value="🎵">🎵 Música</option>
+          <option value="🌈">🌈 Arcoíris</option><option value="🔥">🔥 Fuego</option><option value="🏆">🏆 Trofeo</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-p" onclick="addMsg()" style="width:100%;justify-content:center;margin-top:12px;font-size:15px">📌 PEGAR EN EL MURO</button>
+  </div>
+  <div class="mb" id="mBoard">
+    <div class="mn2" style="background:var(--yellow);--r:-2.5deg"><span class="ne">🌟</span><div class="nf">— La Fam Movellán</div><div class="nt">Para los cumpleañeros</div><div class="ntx">¡Esta fiesta estuvo de LUJO! Los mejores niños del mundo 🎉</div></div>
+    <div class="mn2" style="background:var(--pink);color:var(--white);--r:1.5deg"><span class="ne">❤️</span><div class="nf">— Tía Paty</div><div class="nt">Mis sobrinitos</div><div class="ntx">MovePalooza forever! Los quiero con todo 💕</div></div>
+    <div class="mn2" style="background:var(--sky);--r:-1deg"><span class="ne">🎵</span><div class="nf">— El DJ</div><div class="nt">Todo el festival</div><div class="ntx">¡Ustedes son el mejor público del mundo! 🎧</div></div>
+  </div>
+</section>
+
+<!-- TICKETS -->
+<section id="tickets" class="sw">
+  <div class="sh rv"><div class="sl">🎟️ ACCESO VIP</div><h2 class="st">TU TICKET<br>DIGITAL</h2><p style="font-family:'Lilita One',cursive;font-size:15px;color:rgba(255,255,255,.5);margin-top:8px">Genera tu pase y compártelo en Stories</p></div>
+  <div class="tg rv">
+    <input type="text" class="ti2" id="tn" placeholder="ESCRIBE TU NOMBRE..." maxlength="24">
+    <button class="btn btn-g" onclick="genTkt()" style="width:100%;justify-content:center;font-size:16px">✨ GENERAR TICKET</button>
+    <div class="tc">
+      <div class="tci">
+        <div class="tl2">
+          <div class="tlo">Move</div>
+          <div class="tlo" style="color:var(--pink)">Palooza</div>
+          <div class="tsub">CANCÚN</div>
+          <div class="tdt">SÁB 25 ABRIL 2026 · JARDÍN VICTORIA</div>
+          <div class="tname" id="tnD">TU NOMBRE</div>
+          <div class="tnum">ACCESO #<span id="tnN">000001</span></div>
+          <div class="bc">
+            <span style="height:28px"></span><span style="height:38px"></span><span style="height:20px"></span>
+            <span style="height:34px"></span><span style="height:16px"></span><span style="height:38px"></span>
+            <span style="height:26px"></span><span style="height:30px"></span><span style="height:38px"></span>
+            <span style="height:22px"></span><span style="height:14px"></span><span style="height:36px"></span>
+          </div>
+        </div>
+        <div class="tr">
+          <span class="tbi">🎪</span>
+          <div class="tac">ARTISTA<br>OFICIAL</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-o" onclick="toast('📲 ¡Ticket listo para Stories!')" style="justify-content:center;width:100%">📲 COMPARTIR EN STORIES</button>
+  </div>
+</section>
+
+<!-- MERCH -->
+<section id="merch" class="sw">
+  <div class="sh rv"><div class="sl">👕 COLECCIÓN OFICIAL</div><h2 class="st">MERCH DEL<br>FESTIVAL</h2></div>
+  <div class="mrg rv">
+    <div class="mrc" onclick="toast('🎨 Cargando diseño...')">
+      <div class="mrci" style="background:linear-gradient(135deg,var(--sky),var(--pink))"><span style="font-size:82px;filter:drop-shadow(3px 3px 0 #0A0A0A)">👕</span></div>
+      <div class="mrci2"><div class="mrt">EDICIÓN FESTIVAL</div><div class="mrd">Logo MovePalooza Cancún 2026</div><button class="btn btn-p" style="font-size:12px;padding:9px 18px;width:100%;justify-content:center">VER DISEÑO</button></div>
+    </div>
+    <div class="mrc" onclick="toast('⭐ Edición VIP exclusiva')">
+      <div class="mrci" style="background:linear-gradient(135deg,var(--black),#2a2a2a)"><span style="font-size:82px;filter:drop-shadow(3px 3px 0 var(--green))">👕</span></div>
+      <div class="mrci2"><div class="mrt">EDICIÓN VIP</div><div class="mrd">Diseño exclusivo artista — verde neón</div><button class="btn btn-g" style="font-size:12px;padding:9px 18px;width:100%;justify-content:center">VER DISEÑO</button></div>
+    </div>
+    <div class="mrc" onclick="toast('✏️ Playera con diseño de niño — ¡pronto!')">
+      <div class="mrci" style="background:linear-gradient(135deg,var(--yellow),var(--orange))"><span style="font-size:82px;filter:drop-shadow(3px 3px 0 #0A0A0A)">👕</span></div>
+      <div class="mrci2"><div class="mrt">DISEÑO DE NIÑO</div><div class="mrd">Tu arte en una playera real</div><button class="btn btn-y" style="font-size:12px;padding:9px 18px;width:100%;justify-content:center">REGISTRAR INTERÉS</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- BACKSTAGE -->
+<section id="backstage" class="sw">
+  <div class="sh rv"><div class="sl">🎬 DETRÁS DE CÁMARAS</div><h2 class="st">BACKSTAGE</h2><p style="font-family:'Lilita One',cursive;font-size:15px;opacity:.55;margin-top:7px">Disponible después del evento</p></div>
+  <div class="bg2 rv">
+    <div class="bi big" onclick="toast('📸 Foto disponible post-evento')"><span>📸</span><span class="bil">FOTO DESTACADA</span></div>
+    <div class="bi" onclick="toast('🎬 Video highlight')"><span>🎬</span><span class="bil">VIDEO</span></div>
+    <div class="bi" onclick="toast('💃 Momento de baile')"><span>💃</span><span class="bil">BAILE</span></div>
+    <div class="bi" onclick="toast('🌮 Los taquitos!')"><span>🌮</span><span class="bil">TAQUITOS</span></div>
+    <div class="bi" onclick="toast('🎂 El pastel!')"><span>🎂</span><span class="bil">PASTEL</span></div>
+    <div class="bi" onclick="toast('🏊 El chapuzón!')"><span>🏊</span><span class="bil">CHAPUZÓN</span></div>
+  </div>
+</section>
+
+<!-- KIDS ZONE -->
+<section id="kidszone" class="sw">
+  <div class="sh rv"><div class="sl" style="background:var(--black)">🌟 ZONA ESPECIAL</div><h2 class="st">KIDS<br>ZONE</h2></div>
+  <div class="kg rv">
+    <div class="kc" onclick="toast('🎨 Descargando hoja para colorear...')"><span class="ki">🎨</span><div class="kn">COLOREA EL FESTIVAL</div><div class="kd">Descarga tu hoja especial para colorear</div><button class="btn btn-b" style="font-size:12px;padding:9px 18px">⬇️ DESCARGAR</button></div>
+    <div class="kc" onclick="toast('🧩 ¡Abriendo laberinto!')"><span class="ki">🧩</span><div class="kn">LABERINTO</div><div class="kd">Encuentra la salida del laberinto MovePalooza</div><button class="btn btn-p" style="font-size:12px;padding:9px 18px">🎯 JUGAR</button></div>
+    <div class="kc" onclick="openAvatarModal()"><span class="ki">👾</span><div class="kn">AVATARES</div><div class="kd">Versiones pixel art de los artistas del festival</div><button class="btn btn-b" style="font-size:12px;padding:9px 18px">VER AVATARES</button></div>
+    <div class="kc" onclick="toast('⭐ Hall of fame de los artistas del festival')"><span class="ki">🌟</span><div class="kn">HALL OF FAME</div><div class="kd">Los artistas más chidos del MovePalooza 2026</div><button class="btn btn-y" style="font-size:12px;padding:9px 18px">VER ESTRELLAS</button></div>
+  </div>
+</section>
+
+<!-- RETOS -->
+<section id="retos" class="sw">
+  <div class="sh rv"><div class="sl">🏆 DESAFÍOS</div><h2 class="st">RETOS DEL<br>FESTIVAL</h2></div>
+  <div class="rtg rv">
+    <div class="rtc ul"><span class="rtc-i">🏊</span><div class="rtc-n">REY DEL CHAPUZÓN</div><div class="rtc-d">Primer@ en tirarse a la alberca</div><span class="rtb rtb-d">✅ COMPLETADO</span></div>
+    <div class="rtc ul"><span class="rtc-i">💃</span><div class="rtc-n">REINA DEL BAILE</div><div class="rtc-d">Bailar 3 canciones sin parar</div><span class="rtb rtb-d">✅ COMPLETADO</span></div>
+    <div class="rtc lk" onclick="toast('🔒 ¡Desbloquea este reto en el evento!')"><span class="lic">🔒</span><span class="rtc-i">🌮</span><div class="rtc-n">EL TAQUERO</div><div class="rtc-d">Comer más de 5 taquitos</div><span class="rtb rtb-l">🔒 BLOQUEADO</span></div>
+    <div class="rtc lk" onclick="toast('🔒 ¡Desbloquea este reto en el evento!')"><span class="lic">🔒</span><span class="rtc-i">⚽</span><div class="rtc-n">EL GOLEADOR</div><div class="rtc-d">Ganar una reta de fut en el jardín</div><span class="rtb rtb-l">🔒 BLOQUEADO</span></div>
+    <div class="rtc lk" onclick="toast('🔒 ¡Desbloquea este reto en el evento!')"><span class="lic">🔒</span><span class="rtc-i">🎨</span><div class="rtc-n">EL ARTISTA</div><div class="rtc-d">Terminar una manualidad</div><span class="rtb rtb-l">🔒 BLOQUEADO</span></div>
+    <div class="rtc lk" onclick="toast('🔒 ¡Desbloquea este reto en el evento!')"><span class="lic">🔒</span><span class="rtc-i">📸</span><div class="rtc-n">EL MODELO</div><div class="rtc-d">Foto con el fotógrafo pro</div><span class="rtb rtb-l">🔒 BLOQUEADO</span></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fl">MovePalooza</div>
+  <div class="fs">CANCÚN 2026</div>
+  <div class="fsp">
+    <div class="fsc">🧹 MGC MAGIA DE LA LIMPIEZA</div>
+    <div class="fsc">🏢 MOVELLÁN GRUPO COMERCIAL</div>
+  </div>
+  <div class="fc">© 2026 MovePalooza Cancún — Todos los derechos reservados</div>
+</footer>
+
+<!-- MODAL -->
+<div class="mbg" id="mBg" onclick="closeMdl(event)">
+  <div class="mbox"><button class="mcb" onclick="closeMdl()">✕</button><div id="mCont"></div></div>
+</div>
+<!-- TOASTS -->
+<div id="ts"></div>
+
+<script>
+/* COUNTDOWN */
+function tick(){
+  const diff=new Date('2026-04-25T15:00:00')-new Date();
+  if(diff<=0){document.getElementById('cd').innerHTML='<div style="font-family:\'Black Han Sans\',sans-serif;font-size:clamp(14px,4vw,22px);letter-spacing:2px;padding:18px;background:var(--green);border-radius:11px;width:100%;text-align:center;border:3px solid var(--black)">🎪 ¡EL FESTIVAL ESTÁ EN VIVO!</div>';return;}
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('cd-d').textContent=p(Math.floor(diff/864e5));
+  document.getElementById('cd-h').textContent=p(Math.floor(diff/36e5)%24);
+  document.getElementById('cd-m').textContent=p(Math.floor(diff/6e4)%60);
+  document.getElementById('cd-s').textContent=p(Math.floor(diff/1e3)%60);
+}
+tick();setInterval(tick,1000);
+
+/* TOAST */
+function toast(msg,ms=3000){
+  const el=document.createElement('div');el.className='tos';el.textContent=msg;
+  document.getElementById('ts').appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(100px)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},ms);
+}
+
+/* SCROLL REVEAL */
+const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){e.target.style.transitionDelay=(i*.07)+'s';e.target.classList.add('vis');}});},{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+/* GALLERY */
+const CODE='MOVE2026';
+function chkCode(){
+  const v=document.getElementById('gc').value.trim().toUpperCase();
+  const p=new URLSearchParams(location.search).get('access');
+  if(v===CODE||p==='vip'){document.getElementById('galLogin').style.display='none';document.getElementById('galContent').style.display='block';toast('🎉 ¡Bienvenid@ a la Galería VIP!');}
+  else{toast('❌ Código incorrecto. Revisa tu WhatsApp.');const inp=document.getElementById('gc');inp.style.borderColor='red';setTimeout(()=>inp.style.borderColor='',2000);}
+}
+document.getElementById('gc').addEventListener('keydown',e=>{if(e.key==='Enter')chkCode();});
+window.addEventListener('load',()=>{if(new URLSearchParams(location.search).get('access')==='vip'){document.getElementById('galLogin').style.display='none';document.getElementById('galContent').style.display='block';}});
+function printPh(){toast('🖨️ Abriendo impresión — elige tu servicio');setTimeout(()=>window.print(),800);}
+function openPhotoModal(el){
+  const c=el.querySelector('div').cloneNode(true);c.style.cssText='width:100%;height:210px;border-radius:11px;margin-bottom:14px;border:3px solid var(--black)';
+  document.getElementById('mCont').innerHTML='';document.getElementById('mCont').appendChild(c);
+  document.getElementById('mCont').innerHTML+=`<div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap"><button class="btn btn-g" onclick="toast('⬇️ Descargando HD...')" style="font-size:13px;padding:11px 18px">⬇️ BAJAR HD</button><button class="btn btn-y" onclick="printPh()" style="font-size:13px;padding:11px 18px">🖨️ IMPRIMIR</button><button class="btn btn-b" onclick="toast('📲 Compartiendo...')" style="font-size:13px;padding:11px 18px">📲 COMPARTIR</button></div>`;
+  document.getElementById('mBg').classList.add('active');
+}
+
+/* TICKET */
+function genTkt(){
+  const n=document.getElementById('tn').value.trim();
+  if(!n){toast('✏️ Escribe tu nombre!');return;}
+  document.getElementById('tnD').textContent=n.toUpperCase();
+  document.getElementById('tnN').textContent=String(Math.floor(Math.random()*999999)).padStart(6,'0');
+  toast('🎟️ ¡Ticket listo para Stories!');
+}
+document.getElementById('tn').addEventListener('keydown',e=>{if(e.key==='Enter')genTkt();});
+
+/* MESSAGES */
+const bgMap={y:'var(--yellow)',p:'var(--pink)',s:'var(--sky)',g:'var(--green)',o:'var(--orange)'};
+const txMap={p:'color:var(--white)',o:'color:var(--white)'};
+const rots=['-2.5deg','1.5deg','-1deg','2deg','-1.5deg','1deg'];
+function addMsg(){
+  const f=document.getElementById('mF').value.trim(),t=document.getElementById('mT').value.trim(),x=document.getElementById('mX').value.trim();
+  const c=document.getElementById('mC').value,e=document.getElementById('mE').value;
+  if(!f||!x){toast('✏️ Falta tu nombre o mensaje!');return;}
+  const rot=rots[Math.floor(Math.random()*rots.length)];
+  const el=document.createElement('div');el.className='mn2';
+  el.style.cssText=`background:${bgMap[c]||bgMap.y};--r:${rot};${txMap[c]||''}`;
+  el.innerHTML=`<span class="ne">${e}</span><div class="nf">— ${f}</div>${t?`<div class="nt">${t}</div>`:''}<div class="ntx">${x}</div>`;
+  document.getElementById('mBoard').insertBefore(el,document.getElementById('mBoard').firstChild);
+  ['mF','mT','mX'].forEach(id=>document.getElementById(id).value='');
+  toast('📌 ¡Mensaje pegado en el muro!');
+}
+
+/* RACING */
+let PR=null,RT=null;
+const rivals=[{e:'🐆',n:'Leopardo',s:.88},{e:'🦅',n:'Águila',s:.72},{e:'🐠',n:'Nemo',s:.50}];
+function pickR(el,e,n,s){
+  document.querySelectorAll('.rc').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');PR={e,n,s};
+  document.getElementById('rBtn').disabled=false;toast(`🏁 ${n} listo para la carrera!`);
+}
+function startRace(){
+  if(!PR)return;clearInterval(RT);
+  const area=document.getElementById('rArea'),lEl=document.getElementById('rLanes'),rEl=document.getElementById('rRes');
+  area.style.display='block';rEl.style.display='none';document.getElementById('rBtn').disabled=true;
+  const all=[PR,...rivals],pos=all.map(()=>0),tw=Math.max(area.offsetWidth-140,180);
+  lEl.innerHTML=all.map((r,i)=>`<div class="tl"><span class="lr2" id="rn-${i}">${r.e}</span><span class="ll">${r.n}</span></div>`).join('');
+  let W=null;
+  RT=setInterval(()=>{
+    all.forEach((r,i)=>{
+      const v=(Math.random()-.28)*13;pos[i]=Math.min(pos[i]+r.s*7+v,tw);
+      const el=document.getElementById(`rn-${i}`);if(el)el.style.left=(14+pos[i])+'px';
+      if(pos[i]>=tw&&!W){W=i;clearInterval(RT);setTimeout(()=>{rEl.style.display='block';document.getElementById('rIcon').textContent=i===0?'🏆':'😅';document.getElementById('rTxt').textContent=i===0?`¡${PR.n} GANÓ! ¡CAMPEÓN!`:`Ganó ${all[i].n}... ¡Intenta otra vez!`;toast(i===0?'🏆 ¡¡¡CAMPEÓN!!!':'💪 ¡Casi! Otra vez');},350);}
+    });
+  },50);
+}
+function resetRace(){clearInterval(RT);document.getElementById('rArea').style.display='none';document.getElementById('rBtn').disabled=false;document.querySelectorAll('.rc').forEach(c=>c.classList.remove('sel'));PR=null;}
+
+/* MODAL */
+function closeMdl(e){if(!e||e.target===document.getElementById('mBg'))document.getElementById('mBg').classList.remove('active');}
+function openAvatarModal(){
+  document.getElementById('mCont').innerHTML=`
+    <div style="font-family:'Black Han Sans',sans-serif;font-size:20px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">👾 AVATARES DEL FESTIVAL</div>
+    <p style="opacity:.65;margin-bottom:18px;font-weight:800;font-size:13px">Avatares personalizados disponibles 48hrs post-evento — generados con IA desde fotos reales</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px">
+      ${['🦁','🦊','🐸','🦄','🚀','🐆','🦅','🌟'].map((e,i)=>`<div style="background:${['var(--sky)','var(--pink)','var(--green)','var(--yellow)','var(--orange)','#c8b0ff','var(--sky)','var(--pink)'][i]};border:3px solid var(--black);border-radius:11px;padding:12px;text-align:center;box-shadow:3px 3px 0 var(--black)"><div style="font-size:30px">${e}</div><div style="font-family:'Black Han Sans',sans-serif;font-size:8px;letter-spacing:1px;margin-top:3px;opacity:.65">AVATAR</div></div>`).join('')}
+    </div>
+    <button class="btn btn-b" onclick="toast('🤖 ¡Avatares pronto!');closeMdl()" style="width:100%;justify-content:center;font-size:13px">PRÓXIMAMENTE</button>`;
+  document.getElementById('mBg').classList.add('active');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMdl();});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+</script>
+</body>
+</html>
