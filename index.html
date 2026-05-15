@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Pla.to — Planificador familiar con Alba</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --p:#7c3aed;--p2:#6d28d9;--p3:#ede9fe;
+  --pk:#db2777;--pk2:#be185d;--pk3:#fce7f3;
+  --b:#0891b2;--b2:#0e7490;--b3:#e0f2fe;
+  --a:#f59e0b;--a2:#d97706;--a3:#fef3c7;
+  --g:#16a34a;--g2:#15803d;--g3:#dcfce7;
+  --r:#ef4444;--r3:#fee2e2;
+  --k:#111827;--k2:#374151;--k3:#6b7280;--k4:#d1d5db;
+  --bg:#ffffff;--bg2:#f9fafb;--bg3:#f3f4f6;
+  --bd:#e5e7eb;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shlg:0 10px 40px rgba(0,0,0,.15);
+  --r8:8px;--r12:12px;--r16:16px;--r20:20px;--r24:24px;
+  --ff:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+html,body{font-family:var(--ff);background:var(--bg2);color:var(--k);font-size:14px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(16px);background:var(--k);color:#fff;padding:.65rem 1.4rem;border-radius:100px;font-size:13px;font-weight:600;opacity:0;transition:all .25s;z-index:9999;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center;box-shadow:var(--shlg)}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{background:var(--g)}
+#toast.err{background:var(--r)}
+.page{display:none;min-height:100vh}.page.on{display:block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:.72rem 1.4rem;border-radius:var(--r12);font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--ff);transition:all .18s;line-height:1;width:100%;text-decoration:none}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--p2)}
+.btn-o{background:transparent;color:var(--k2);border:1.5px solid var(--bd)}.btn-o:hover{background:var(--bg3)}
+.btn-sm{padding:.45rem .95rem;font-size:13px;width:auto!important}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.fg{margin-bottom:.85rem}
+.fl{display:block;font-size:12px;font-weight:600;color:var(--k2);margin-bottom:.35rem}
+.fi{width:100%;padding:.72rem 1rem;border:1.5px solid var(--bd);border-radius:var(--r12);font-size:14px;font-family:var(--ff);color:var(--k);background:var(--bg);outline:none;transition:all .2s;-webkit-appearance:none}
+.fi:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.fi.err{border-color:var(--r)}
+.ferr{font-size:11.5px;color:var(--r);margin-top:.3rem;display:none}
+.ferr.on{display:block}
+/* NAV */
+.lnav{background:var(--bg);border-bottom:1px solid var(--bd);padding:.9rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--sh)}
+.llogo{font-size:22px;font-weight:800;color:var(--k);letter-spacing:-.02em}
+.llogo span{color:var(--p)}
+/* HERO */
+.hero{background:linear-gradient(135deg,#7c3aed 0%,#db2777 50%,#0891b2 100%);min-height:520px;display:flex;align-items:center;padding:4rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="80" cy="20" r="40" fill="rgba(255,255,255,.05)"/><circle cx="10" cy="80" r="30" fill="rgba(255,255,255,.05)"/></svg>');background-size:cover}
+.hero-inner{max-width:680px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.hero-pill{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.4rem 1rem;border-radius:100px;font-size:12.5px;font-weight:600;margin-bottom:1.5rem}
+.hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:1rem}
+.hero p{font-size:17px;color:rgba(255,255,255,.8);max-width:480px;margin:0 auto 2rem;line-height:1.7}
+.hero-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.hero-btns .btn{width:auto;padding:.9rem 2rem;font-size:15px}
+/* FEATURES */
+.feats{background:var(--bg);border-bottom:1px solid var(--bd);padding:1rem 2rem;display:flex;gap:2rem;justify-content:center;flex-wrap:wrap}
+.feat{display:flex;align-items:center;gap:.5rem;font-size:13px;font-weight:500;color:var(--k2);white-space:nowrap}
+.feat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* CARDS SECTION */
+.csec{max-width:1100px;margin:0 auto;padding:5rem 2rem}
+.csec-eye{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--p);margin-bottom:.5rem}
+.csec-t{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;color:var(--k);letter-spacing:-.02em;line-height:1.15;margin-bottom:.75rem}
+.csec-s{font-size:15px;color:var(--k3);max-width:500px;line-height:1.7}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2.5rem}
+.feat-card{border-radius:var(--r16);padding:1.5rem;transition:all .2s;cursor:default}
+.feat-card:hover{transform:translateY(-4px);box-shadow:var(--shlg)}
+.feat-card-ico{width:48px;height:48px;border-radius:var(--r12);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:24px}
+.feat-card h3{font-size:15px;font-weight:700;margin-bottom:.35rem}
+.feat-card p{font-size:13px;line-height:1.6;opacity:.75}
+/* PRICING */
+.prices{background:var(--bg);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:5rem 2rem}
+.pgrid{max-width:800px;margin:2.5rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.pcard{border-radius:var(--r20);padding:2rem;border:2px solid var(--bd);background:var(--bg);transition:all .2s}
+.pcard.feat{border-color:var(--p);box-shadow:0 0 0 4px rgba(124,58,237,.1)}
+.pcard-badge{display:inline-block;background:linear-gradient(135deg,var(--p),var(--pk));color:#fff;padding:.3rem .9rem;border-radius:100px;font-size:11px;font-weight:700;margin-bottom:1rem}
+.pcard-name{font-size:15px;font-weight:700;margin-bottom:.35rem}
+.pcard-price{font-size:48px;font-weight:800;color:var(--k);letter-spacing:-.02em;line-height:1}
+.pcard-price span{font-size:14px;font-weight:400;color:var(--k3)}
+.pcard-desc{font-size:13px;color:var(--k3);margin:.5rem 0 1.25rem;line-height:1.6}
+.pcard-feats{list-style:none;display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.5rem}
+.pcard-feats li{display:flex;align-items:flex-start;gap:.5rem;font-size:13px;color:var(--k2)}
+.check{width:16px;height:16px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:10px}
+/* CTA */
+.cta{background:linear-gradient(135deg,var(--p),var(--pk));padding:5rem 2rem;text-align:center}
+.cta h2{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:#fff;margin-bottom:.6rem;letter-spacing:-.01em}
+.cta p{font-size:16px;color:rgba(255,255,255,.75);margin-bottom:2rem}
+/* FOOTER */
+.foot{background:var(--k);padding:2rem;text-align:center;font-size:13px;color:rgba(255,255,255,.4)}
+.foot strong{color:rgba(255,255,255,.7)}
+/* AUTH */
+#pg-auth{min-height:100vh;background:var(--bg2);display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.abox{background:var(--bg);border-radius:var(--r24);width:100%;max-width:420px;padding:2.25rem;box-shadow:var(--shlg);border:1px solid var(--bd)}
+.alogo{font-size:24px;font-weight:800;color:var(--k);letter-spacing:-.02em;margin-bottom:.2rem}
+.alogo span{color:var(--p)}
+.asub{font-size:13.5px;color:var(--k3);margin-bottom:2rem}
+.atabs{display:flex;background:var(--bg2);border-radius:var(--r12);padding:3px;margin-bottom:1.5rem;border:1px solid var(--bd)}
+.atab{flex:1;padding:.55rem;text-align:center;border-radius:10px;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--k3);border:none;background:none;font-family:var(--ff)}
+.atab.on{background:var(--bg);color:var(--k);box-shadow:var(--sh)}
+.apane{display:none}.apane.on{display:block}
+.trial-box{background:linear-gradient(135deg,var(--p3),var(--pk3));border-radius:var(--r12);padding:.85rem 1rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:.6rem;border:1px solid rgba(124,58,237,.2)}
+.back-btn{display:flex;align-items:center;gap:.4rem;font-size:13px;color:var(--k3);cursor:pointer;margin-top:1rem;border:none;background:none;font-family:var(--ff);padding:0}
+.back-btn:hover{color:var(--p)}
+.esent{text-align:center;padding:1rem 0}
+@media(max-width:640px){
+  .pgrid{grid-template-columns:1fr}
+  .hero-btns .btn{width:100%}
+  .lnav .btn-o{display:none}
+  .feats{gap:1rem}
+  .cards{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- LANDING -->
+<div id="pg-land" class="page on">
+  <nav class="lnav">
+    <div class="llogo">Pla<span>.</span>to</div>
+    <div style="display:flex;gap:.5rem">
+      <button class="btn btn-o btn-sm" onclick="showAuth('login')">Iniciar sesión</button>
+      <button class="btn btn-p btn-sm" onclick="showAuth('register')">Comenzar gratis</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-pill">✨ Conoce a Alba, tu consultora familiar</div>
+      <h1>Come mejor,<br>gasta menos.</h1>
+      <p>Alba planifica tus menús, calcula exactamente lo que necesitas comprar y consolida tu lista del super — semana tras semana.</p>
+      <div class="hero-btns">
+        <button class="btn" onclick="showAuth('register')" style="background:#fff;color:var(--p);font-weight:700">Empezar 7 días gratis</button>
+        <button class="btn btn-o" onclick="showAuth('login')" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)">Ya tengo cuenta</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="feats">
+    <div class="feat"><div class="feat-dot" style="background:var(--p)"></div>Menú semanal, quincenal y mensual</div>
+    <div class="feat"><div class="feat-dot" style="background:var(--pk)"></div>Lista consolidada automática</div>
+    <div class="feat"><div class="feat-dot" style="background:var(--b)"></div>Hasta 9 perfiles familiares</div>
+    <div class="feat"><div class="feat-dot" style="background:var(--g)"></div>Envío por WhatsApp</div>
+    <div class="feat"><div class="feat-dot" style="background:var(--a)"></div>Alba como consultora personal</div>
+  </div>
+
+  <div class="csec">
+    <div class="csec-eye">Cómo funciona</div>
+    <div class="csec-t">Alba hace el trabajo,<br>tú solo cocinas.</div>
+    <p class="csec-s">En menos de 5 minutos tienes tu menú de la semana y la lista exacta de lo que necesitas comprar.</p>
+    <div class="cards">
+      <div class="feat-card" style="background:var(--p3)">
+        <div class="feat-card-ico" style="background:var(--p)">📋</div>
+        <h3 style="color:var(--p2)">Agrega recetas</h3>
+        <p style="color:var(--p2)">Con foto, ingredientes y porciones. Alba las organiza por categoría.</p>
+      </div>
+      <div class="feat-card" style="background:var(--pk3)">
+        <div class="feat-card-ico" style="background:var(--pk)">📅</div>
+        <h3 style="color:var(--pk2)">Planifica tu menú</h3>
+        <p style="color:var(--pk2)">Elige qué comes cada día. Alba ajusta las cantidades a tu familia.</p>
+      </div>
+      <div class="feat-card" style="background:var(--b3)">
+        <div class="feat-card-ico" style="background:var(--b)">🛒</div>
+        <h3 style="color:var(--b2)">Alba consolida todo</h3>
+        <p style="color:var(--b2)">Si 3 recetas usan pollo, Alba suma. Una lista precisa, sin duplicados.</p>
+      </div>
+      <div class="feat-card" style="background:var(--a3)">
+        <div class="feat-card-ico" style="background:var(--a)">💬</div>
+        <h3 style="color:var(--a2)">Compra donde quieras</h3>
+        <p style="color:var(--a2)">Envía la lista por WhatsApp. Sin depender de ninguna tienda.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="prices">
+    <div style="max-width:800px;margin:0 auto;text-align:center">
+      <div class="csec-eye">Precios</div>
+      <div class="csec-t">Simple y sin sorpresas</div>
+      <div class="pgrid">
+        <div class="pcard">
+          <div class="pcard-name">Prueba gratuita</div>
+          <div class="pcard-price">$0<span></span></div>
+          <div class="pcard-desc">7 días con acceso completo. Sin tarjeta de crédito.</div>
+          <ul class="pcard-feats">
+            <li><div class="check" style="background:var(--g3);color:var(--g)">✓</div>Acceso completo 7 días</li>
+            <li><div class="check" style="background:var(--g3);color:var(--g)">✓</div>Todas las funciones de Alba</li>
+          </ul>
+          <button class="btn btn-o" onclick="showAuth('register')">Empezar gratis</button>
+        </div>
+        <div class="pcard feat">
+          <div class="pcard-badge">✨ Plan Familiar</div>
+          <div class="pcard-name">Plan Pro</div>
+          <div class="pcard-price">$30<span>/mes</span></div>
+          <div class="pcard-desc">Todo lo que necesita tu familia, sin límites.</div>
+          <ul class="pcard-feats">
+            <li><div class="check" style="background:var(--p3);color:var(--p)">✓</div>Hasta 9 perfiles familiares</li>
+            <li><div class="check" style="background:var(--p3);color:var(--p)">✓</div>Menú semanal, quincenal y mensual</li>
+            <li><div class="check" style="background:var(--p3);color:var(--p)">✓</div>Lista consolidada por Alba</li>
+            <li><div class="check" style="background:var(--p3);color:var(--p)">✓</div>Fotos reales de recetas</li>
+            <li><div class="check" style="background:var(--p3);color:var(--p)">✓</div>Envío por WhatsApp</li>
+            <li><div class="check" style="background:var(--p3);color:var(--p)">✓</div>Cancela cuando quieras</li>
+          </ul>
+          <button class="btn btn-p" onclick="showAuth('register')">Empezar 7 días gratis</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <h2>¿Lista para organizar tu cocina?</h2>
+    <p>7 días gratis, sin tarjeta. Cancela cuando quieras.</p>
+    <button class="btn" onclick="showAuth('register')" style="background:#fff;color:var(--p);width:auto;padding:1rem 2.5rem;font-size:15px;font-weight:800">Crear mi cuenta →</button>
+  </div>
+  <div class="foot"><strong>Pla.to</strong> · Tu consultora Alba · $30 MXN/mes · Cancela cuando quieras</div>
+</div>
+
+<!-- AUTH -->
+<div id="pg-auth" class="page">
+  <div class="abox">
+    <div class="alogo">Pla<span>.</span>to</div>
+    <div class="asub" id="asub">Bienvenida de vuelta</div>
+    <div class="atabs">
+      <button class="atab on" id="tab-login" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="atab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="apane on" id="pane-login">
+      <div class="fg"><label class="fl">Correo electrónico</label>
+        <input class="fi" type="email" id="l-email" placeholder="correo@ejemplo.com" onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="ferr" id="l-email-err">Ingresa un correo válido</div>
+      </div>
+      <div class="fg"><label class="fl">Contraseña</label>
+        <input class="fi" type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="ferr" id="l-pass-err">Correo o contraseña incorrectos</div>
+      </div>
+      <div style="text-align:right;margin-bottom:1rem"><a href="#" onclick="doForgot();return false" style="font-size:12px;color:var(--p);font-weight:600;text-decoration:none">¿Olvidaste tu contraseña?</a></div>
+      <button class="btn btn-p" id="l-btn" onclick="doLogin()">Iniciar sesión</button>
+      <button class="back-btn" onclick="goLanding()" style="margin-top:.85rem">← Volver al inicio</button>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="apane" id="pane-register">
+      <div class="trial-box">
+        <span style="font-size:22px">🎁</span>
+        <div><div style="font-size:13px;font-weight:700;color:var(--p2);margin-bottom:2px">7 días gratis, sin tarjeta</div>
+        <div style="font-size:12px;color:var(--k2)">Acceso completo a todas las funciones. Después solo $30/mes.</div></div>
+      </div>
+      <div class="fg"><label class="fl">Tu nombre</label>
+        <input class="fi" type="text" id="r-nombre" placeholder="Ana García">
+        <div class="ferr" id="r-nombre-err">Escribe tu nombre</div>
+      </div>
+      <div class="fg"><label class="fl">Correo electrónico</label>
+        <input class="fi" type="email" id="r-email" placeholder="correo@ejemplo.com">
+        <div class="ferr" id="r-email-err">Ingresa un correo válido</div>
+      </div>
+      <div class="fg"><label class="fl">Contraseña</label>
+        <input class="fi" type="password" id="r-pass" placeholder="Mínimo 8 caracteres" onkeydown="if(event.key==='Enter')doRegister()">
+        <div class="ferr" id="r-pass-err">Mínimo 8 caracteres</div>
+      </div>
+      <div class="fg"><label class="fl">¿Cuántas personas en tu familia?</label>
+        <select class="fi" id="r-personas">
+          <option value="1">Solo yo</option><option value="2">2 personas</option><option value="3">3 personas</option>
+          <option value="4" selected>4 personas</option><option value="5">5 personas</option><option value="6">6 personas</option>
+          <option value="7">7 personas</option><option value="8">8 personas</option><option value="9">9 personas</option>
+        </select>
+      </div>
+      <button class="btn btn-p" id="r-btn" onclick="doRegister()">Crear cuenta gratis</button>
+      <div style="font-size:11.5px;color:var(--k3);text-align:center;margin-top:.75rem">Al registrarte aceptas los <a href="#" style="color:var(--p);font-weight:600">términos de uso</a></div>
+      <button class="back-btn" onclick="goLanding()">← Volver al inicio</button>
+    </div>
+
+    <!-- EMAIL ENVIADO -->
+    <div class="apane" id="pane-sent">
+      <div class="esent">
+        <div style="font-size:56px;margin-bottom:1rem">📬</div>
+        <div style="font-size:20px;font-weight:800;color:var(--p2);margin-bottom:.5rem">Revisa tu correo</div>
+        <div style="font-size:13.5px;color:var(--k2);line-height:1.6;margin-bottom:1.5rem">Enviamos un enlace a <strong id="sent-email"></strong>.<br>Haz clic en él para activar tu cuenta.</div>
+        <div style="font-size:12px;color:var(--k3);margin-bottom:1.25rem">¿No lo ves? Revisa la carpeta de spam.</div>
+        <button class="btn btn-p btn-sm" onclick="switchTab('login')">Ya activé mi cuenta — Entrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const{createClient}=supabase;
+const db=createClient('https://nzlqkeffnamynvuxoaag.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56bHFrZWZmbmFteW52dXhvYWFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMDc4OTcsImV4cCI6MjA5Mzc4Mzg5N30.4GXVvCf1a8VJ7cExQprnRPUXIDnf4xNbPqQgew5qjPE');
+const ADMIN='luiscomercializadora31@gmail.com';
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+function goLanding(){showPage('pg-land');}
+function showAuth(t){showPage('pg-auth');switchTab(t||'login');}
+function switchTab(t){
+  document.querySelectorAll('.atab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.apane').forEach(x=>x.classList.remove('on'));
+  document.getElementById('tab-'+t).classList.add('on');
+  document.getElementById('pane-'+t).classList.add('on');
+  document.getElementById('asub').textContent=t==='login'?'Bienvenida de vuelta':'Crea tu cuenta familiar';
+  clearErrs();
+}
+let toastT;
+function toast(msg,tipo=''){const el=document.getElementById('toast');el.textContent=msg;el.className='on'+(tipo?' '+tipo:'');clearTimeout(toastT);toastT=setTimeout(()=>el.className='',3200);}
+function clearErrs(){document.querySelectorAll('.ferr').forEach(e=>e.classList.remove('on'));document.querySelectorAll('.fi').forEach(i=>i.classList.remove('err'));}
+function showErr(iId,eId,msg=''){const i=document.getElementById(iId),e=document.getElementById(eId);if(i)i.classList.add('err');if(e){if(msg)e.textContent=msg;e.classList.add('on');}}
+async function doLogin(){
+  clearErrs();
+  const email=document.getElementById('l-email').value.trim();
+  const pass=document.getElementById('l-pass').value;
+  if(!email||!email.includes('@')){showErr('l-email','l-email-err');return;}
+  if(!pass){showErr('l-pass','l-pass-err','Escribe tu contraseña');return;}
+  const btn=document.getElementById('l-btn');btn.disabled=true;btn.textContent='Entrando...';
+  try{
+    const{data,error}=await db.auth.signInWithPassword({email,password:pass});
+    if(error)throw error;
+    if(email===ADMIN){window.location.href='admin.html';return;}
+    window.location.href='app.html';
+  }catch(e){
+    btn.disabled=false;btn.textContent='Iniciar sesión';
+    if(e.message?.includes('Invalid')||e.message?.includes('credentials')){showErr('l-pass','l-pass-err','Correo o contraseña incorrectos');}
+    else toast('Error: '+e.message,'err');
+  }
+}
+async function doRegister(){
+  clearErrs();
+  const nombre=document.getElementById('r-nombre').value.trim();
+  const email=document.getElementById('r-email').value.trim();
+  const pass=document.getElementById('r-pass').value;
+  const personas=parseInt(document.getElementById('r-personas').value)||4;
+  let ok=true;
+  if(!nombre){showErr('r-nombre','r-nombre-err','Escribe tu nombre');ok=false;}
+  if(!email||!email.includes('@')){showErr('r-email','r-email-err','Correo inválido');ok=false;}
+  if(!pass||pass.length<8){showErr('r-pass','r-pass-err','Mínimo 8 caracteres');ok=false;}
+  if(!ok)return;
+  const btn=document.getElementById('r-btn');btn.disabled=true;btn.textContent='Creando cuenta...';
+  try{
+    const{data,error}=await db.auth.signUp({email,password:pass,options:{data:{nombre}}});
+    if(error)throw error;
+    if(data.user){
+      const trial=new Date();trial.setDate(trial.getDate()+7);
+      await db.from('usuarios').upsert({id:data.user.id,email,nombre,plan:'free',personas,trial_hasta:trial.toISOString()});
+    }
+    document.getElementById('sent-email').textContent=email;
+    document.querySelectorAll('.apane').forEach(p=>p.classList.remove('on'));
+    document.getElementById('pane-sent').classList.add('on');
+  }catch(e){
+    btn.disabled=false;btn.textContent='Crear cuenta gratis';
+    if(e.message?.includes('already')){showErr('r-email','r-email-err','Este correo ya está registrado');}
+    else toast('Error: '+e.message,'err');
+  }
+}
+async function doForgot(){
+  const email=document.getElementById('l-email').value.trim();
+  if(!email||!email.includes('@')){showErr('l-email','l-email-err','Escribe tu correo primero');return;}
+  try{
+    await db.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/app.html'});
+    toast('✅ Correo de recuperación enviado','ok');
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+(async function(){
+  const hash=window.location.hash;
+  if(hash&&hash.includes('access_token')){window.location.href='app.html'+hash;return;}
+  const{data}=await db.auth.getSession();
+  if(data.session?.user){
+    if(data.session.user.email===ADMIN)window.location.href='admin.html';
+    else window.location.href='app.html';
+  }
+})();
+</script>
+</body>
+</html>

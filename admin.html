@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pla.to — Panel Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#7c3aed;--p2:#6d28d9;--p3:#ede9fe;--pl:#ddd6fe;
+  --pk:#db2777;--pk2:#be185d;--pk3:#fce7f3;
+  --b:#0891b2;--b2:#0e7490;--b3:#cffafe;
+  --a:#f59e0b;--a2:#d97706;--a3:#fef3c7;
+  --g:#16a34a;--g2:#15803d;--g3:#dcfce7;
+  --r:#ef4444;--r2:#dc2626;--r3:#fee2e2;
+  --k:#111827;--k2:#374151;--k3:#6b7280;--k4:#d1d5db;
+  --bg:#ffffff;--bg2:#f9fafb;--bg3:#f3f4f6;--bd:#e5e7eb;
+  --sh:0 1px 3px rgba(0,0,0,.08);--shmd:0 4px 20px rgba(0,0,0,.1);--shlg:0 10px 40px rgba(0,0,0,.15);
+  --r8:8px;--r12:12px;--r16:16px;--r20:20px;
+  --ff:'Plus Jakarta Sans',system-ui,sans-serif;
+  --side:230px;
+}
+body{font-family:var(--ff);background:var(--bg2);color:var(--k);font-size:14px;-webkit-font-smoothing:antialiased}
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--k);color:#fff;padding:.7rem 1.25rem;border-radius:var(--r12);font-size:13px;font-weight:600;opacity:0;transition:all .28s;z-index:9999;pointer-events:none;max-width:340px;box-shadow:var(--shlg)}
+#toast.on{opacity:1}
+#toast.ok{background:var(--g)}
+#toast.err{background:var(--r)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:var(--side) 1fr;min-height:100vh}
+.side{background:linear-gradient(180deg,#1e1b4b 0%,#2d1f69 100%);min-height:100vh;position:fixed;top:0;left:0;width:var(--side);display:flex;flex-direction:column;z-index:50}
+.side-brand{padding:1.4rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.side-logo{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.01em}
+.side-logo span{color:#a78bfa}
+.side-role{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:3px}
+.sidenav{padding:.65rem 0;flex:1}
+.sidenav-lbl{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);padding:.65rem 1.15rem .25rem}
+.sideitem{display:flex;align-items:center;gap:.65rem;padding:.65rem 1.15rem;cursor:pointer;transition:all .15s;color:rgba(255,255,255,.5);font-size:13px;border:none;background:none;width:100%;text-align:left;font-family:var(--ff);border-radius:0}
+.sideitem:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.sideitem.on{background:rgba(167,139,250,.15);color:#a78bfa}
+.sideitem-ico{width:28px;height:28px;border-radius:var(--r8);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.side-badge{margin-left:auto;background:var(--r);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px}
+.side-foot{padding:.9rem 1.15rem;border-top:1px solid rgba(255,255,255,.08)}
+.side-user{display:flex;align-items:center;gap:.6rem}
+.side-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pk));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.side-name{font-size:12.5px;font-weight:500;color:rgba(255,255,255,.75)}
+.side-sub{font-size:10px;color:rgba(255,255,255,.3)}
+
+/* MAIN */
+.main{margin-left:var(--side);padding:2rem;min-height:100vh}
+.sec{display:none}.sec.on{display:block}
+
+/* PAGE HEADER */
+.pghdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;gap:1rem;flex-wrap:wrap}
+.pgtitle{font-size:26px;font-weight:800;color:var(--k);letter-spacing:-.01em;line-height:1.1}
+.pgtitle small{display:block;font-size:12.5px;font-weight:400;color:var(--k3);margin-top:3px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.75rem}
+.stat{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r16);padding:1.25rem;box-shadow:var(--sh);transition:all .2s}
+.stat:hover{box-shadow:var(--shmd);transform:translateY(-2px)}
+.stat-num{font-size:34px;font-weight:800;color:var(--k);letter-spacing:-.02em;line-height:1}
+.stat-lbl{font-size:11.5px;color:var(--k3);margin-top:.2rem;font-weight:500}
+.stat-delta{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:.4rem}
+
+/* CARDS */
+.card{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r16);box-shadow:var(--sh);overflow:hidden;margin-bottom:1.25rem}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.35rem;border-bottom:1px solid var(--bd);background:var(--bg2)}
+.card-title{font-size:13.5px;font-weight:700}
+.card-body{padding:1.1rem 1.35rem}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--k3);padding:.65rem 1.1rem;background:var(--bg2);border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:.8rem 1.1rem;border-bottom:1px solid var(--bd);font-size:13px;color:var(--k2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg2)}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.bdg-p{background:var(--p3);color:var(--p2)}.bdg-g{background:var(--g3);color:var(--g2)}.bdg-a{background:var(--a3);color:var(--a2)}.bdg-b{background:var(--b3);color:var(--b2)}.bdg-gray{background:var(--bg3);color:var(--k2)}.bdg-r{background:var(--r3);color:var(--r2)}.bdg-pk{background:var(--pk3);color:var(--pk2)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:.72rem 1.25rem;border-radius:var(--r12);font-size:13.5px;font-weight:600;cursor:pointer;border:none;font-family:var(--ff);transition:all .18s;text-decoration:none;line-height:1}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--p2)}
+.btn-grad{background:linear-gradient(135deg,var(--p),var(--pk));color:#fff}
+.btn-o{background:transparent;color:var(--k2);border:1.5px solid var(--bd)}.btn-o:hover{background:var(--bg3)}
+.btn-r{background:var(--r3);color:var(--r2);border:1px solid #fecaca}.btn-r:hover{background:#fecaca}
+.btn-sm{padding:.45rem .9rem;font-size:12px}
+.btn-xs{padding:.3rem .65rem;font-size:11px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* FORM */
+.fg{margin-bottom:.85rem}
+.fl{display:block;font-size:12px;font-weight:600;color:var(--k2);margin-bottom:.35rem}
+.fi{width:100%;padding:.68rem .9rem;border:1.5px solid var(--bd);border-radius:var(--r12);font-size:13.5px;font-family:var(--ff);color:var(--k);background:var(--bg);outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fi:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+select.fi{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center;padding-right:2.25rem;cursor:pointer}
+
+/* PROGRESS */
+.pbar{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin-top:.3rem}
+.pfill{height:100%;border-radius:3px;transition:width .5s ease}
+
+/* TOGGLE */
+.tog{position:relative;width:40px;height:22px;display:inline-block;flex-shrink:0}
+.tog input{display:none}
+.tog-sl{position:absolute;inset:0;background:var(--k4);border-radius:22px;cursor:pointer;transition:.2s}
+.tog-sl::before{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog input:checked+.tog-sl{background:var(--g)}
+.tog input:checked+.tog-sl::before{transform:translateX(18px)}
+
+/* SROW */
+.srow{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--bd)}
+.srow:last-child{border-bottom:none}
+.srow-t{font-size:13.5px;font-weight:500}
+.srow-s{font-size:12px;color:var(--k3);margin-top:1px}
+
+/* BAR CHART */
+.bwrap{padding:1.1rem 1.35rem}
+.bchart{display:flex;align-items:flex-end;gap:.5rem;height:110px;border-bottom:2px solid var(--bd);margin-bottom:.4rem}
+.bbar{flex:1;border-radius:4px 4px 0 0;background:var(--pl);position:relative;cursor:pointer;transition:background .2s;min-height:4px}
+.bbar:hover,.bbar.hi{background:var(--p)}
+.bval{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--k2);white-space:nowrap}
+.blbl{font-size:9px;color:var(--k3);text-align:center;margin-top:.35rem}
+
+/* MODAL */
+.mover{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(5px)}
+.mover.on{display:flex}
+.mbox{background:var(--bg);border-radius:var(--r20);width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);padding:1.75rem}
+.mhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.mtitle{font-size:18px;font-weight:700}
+.mclose{background:var(--bg3);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;color:var(--k3);display:flex;align-items:center;justify-content:center}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem 1.5rem;color:var(--k3)}
+.empty-ico{font-size:36px;display:block;margin-bottom:.75rem;opacity:.35}
+.empty-t{font-size:14px;font-weight:600;color:var(--k2);margin-bottom:.35rem}
+
+/* LOADING */
+.ld{display:flex;align-items:center;justify-content:center;padding:3rem;gap:.65rem;color:var(--k3)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:20px;height:20px;border:2.5px solid var(--bd);border-top-color:var(--p);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+
+/* FILTERS */
+.filters{display:flex;gap:.65rem;padding:.85rem 1.35rem;border-bottom:1px solid var(--bd);background:var(--bg2);flex-wrap:wrap}
+.filters .fi{max-width:220px;padding:.5rem .85rem;font-size:12.5px}
+
+@media(max-width:960px){
+  .layout{grid-template-columns:1fr}
+  .side{display:none}
+  .main{margin-left:0}
+  .stats{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="side">
+  <div class="side-brand">
+    <div class="side-logo">Pla<span>.</span>to</div>
+    <div class="side-role">Panel Propietario</div>
+  </div>
+  <nav class="sidenav">
+    <div class="sidenav-lbl">Principal</div>
+    <button class="sideitem on" onclick="navTo('dashboard',this)"><div class="sideitem-ico">📊</div>Dashboard</button>
+    <button class="sideitem" onclick="navTo('usuarios',this)"><div class="sideitem-ico">👥</div>Usuarios<span class="side-badge" id="badge-u">0</span></button>
+    <button class="sideitem" onclick="navTo('pagos',this)"><div class="sideitem-ico">💳</div>Pagos</button>
+    <div class="sidenav-lbl">Contenido</div>
+    <button class="sideitem" onclick="navTo('recetas',this)"><div class="sideitem-ico">📖</div>Recetas base</button>
+    <div class="sidenav-lbl">Sistema</div>
+    <button class="sideitem" onclick="navTo('config',this)"><div class="sideitem-ico">⚙️</div>Config IA</button>
+    <button class="sideitem" onclick="doLogout()"><div class="sideitem-ico">↩</div>Cerrar sesión</button>
+  </nav>
+  <div class="side-foot">
+    <div class="side-user">
+      <div class="side-av">👑</div>
+      <div><div class="side-name" id="admin-name">Propietario</div><div class="side-sub">Acceso total</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- DASHBOARD -->
+  <div class="sec on" id="sec-dashboard">
+    <div class="pghdr">
+      <div class="pgtitle">Dashboard<small id="dash-fecha">Cargando...</small></div>
+      <div style="display:flex;gap:.65rem">
+        <button class="btn btn-o btn-sm" onclick="exportarCSV()">📥 Exportar CSV</button>
+        <button class="btn btn-grad btn-sm" onclick="cargarTodo()">↺ Actualizar</button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="s-total">—</div>
+        <div class="stat-lbl">Usuarios totales</div>
+        <span class="stat-delta" style="background:var(--g3);color:var(--g2)" id="s-total-d"></span>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:var(--p)" id="s-pro">—</div>
+        <div class="stat-lbl">Plan Pro activos</div>
+        <span class="stat-delta" style="background:var(--p3);color:var(--p2)" id="s-pro-d"></span>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:var(--a)" id="s-trial">—</div>
+        <div class="stat-lbl">En periodo trial</div>
+        <span class="stat-delta" style="background:var(--a3);color:var(--a2)" id="s-trial-d"></span>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:var(--g)" id="s-mrr">—</div>
+        <div class="stat-lbl">MRR este mes</div>
+        <span class="stat-delta" style="background:var(--g3);color:var(--g2)" id="s-mrr-d"></span>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">📈 Registros — últimos 7 días</span></div>
+        <div class="bwrap">
+          <div class="bchart" id="bchart"><div class="ld"><div class="spinner"></div></div></div>
+          <div style="display:flex" id="blbls"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">🎯 Distribución de planes</span></div>
+        <div class="card-body" id="dist-planes"><div class="ld"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">Últimos registros</span><button class="btn btn-o btn-sm" onclick="navTo('usuarios',document.querySelectorAll('.sideitem')[1])">Ver todos →</button></div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Usuario</th><th>Plan</th><th>Trial hasta</th><th>Registro</th><th>Estado</th></tr></thead>
+        <tbody id="tbody-recientes"><tr><td colspan="5"><div class="ld"><div class="spinner"></div><span>Cargando...</span></div></td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- USUARIOS -->
+  <div class="sec" id="sec-usuarios">
+    <div class="pghdr">
+      <div class="pgtitle">Usuarios<small id="u-count">Cargando...</small></div>
+      <button class="btn btn-grad btn-sm" onclick="cargarUsuarios()">↺ Actualizar</button>
+    </div>
+    <div class="card">
+      <div class="filters">
+        <input class="fi" placeholder="Buscar por nombre o correo..." id="f-buscar" oninput="filtrarU()">
+        <select class="fi" id="f-plan" onchange="filtrarU()">
+          <option value="">Todos los planes</option>
+          <option value="pro">Pro</option>
+          <option value="free">Free / Trial</option>
+        </select>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Usuario</th><th>Personas</th><th>Plan</th><th>Trial hasta</th><th>Registro</th><th></th></tr></thead>
+        <tbody id="tbody-u"><tr><td colspan="6"><div class="ld"><div class="spinner"></div></div></td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGOS -->
+  <div class="sec" id="sec-pagos">
+    <div class="pghdr">
+      <div class="pgtitle">Pagos<small id="p-count">Cargando...</small></div>
+      <button class="btn btn-grad btn-sm" onclick="cargarPagos()">↺ Actualizar</button>
+    </div>
+    <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat"><div class="stat-num" style="color:var(--g)" id="p-mes">—</div><div class="stat-lbl">Ingresos este mes</div></div>
+      <div class="stat"><div class="stat-num" id="p-cnt">—</div><div class="stat-lbl">Pagos aprobados</div></div>
+      <div class="stat"><div class="stat-num" id="p-avg">—</div><div class="stat-lbl">Promedio por pago</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">Historial de pagos</span></div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Usuario</th><th>Monto</th><th>Estado</th><th>MP ID</th><th>Fecha</th></tr></thead>
+        <tbody id="tbody-p"><tr><td colspan="5"><div class="ld"><div class="spinner"></div></div></td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECETAS BASE -->
+  <div class="sec" id="sec-recetas">
+    <div class="pghdr">
+      <div class="pgtitle">Recetas Base<small id="r-count">Cargando...</small></div>
+      <button class="btn btn-grad btn-sm" onclick="abrirNuevaReceta()">+ Nueva receta</button>
+    </div>
+    <div class="card">
+      <div class="filters">
+        <input class="fi" placeholder="Buscar receta..." oninput="filtrarR(this.value)">
+        <select class="fi" onchange="filtrarRcat(this.value)" style="width:160px">
+          <option value="">Todas</option>
+          <option value="desayuno">Desayuno</option>
+          <option value="comida">Comida</option>
+          <option value="cena">Cena</option>
+          <option value="lunch">Lunch</option>
+          <option value="snack">Snack</option>
+        </select>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Receta</th><th>Categoría</th><th>Porciones</th><th>Ingredientes</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="tbody-r"><tr><td colspan="6"><div class="ld"><div class="spinner"></div></div></td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG IA -->
+  <div class="sec" id="sec-config">
+    <div class="pghdr"><div class="pgtitle">Config IA<small>Motor de Alba — Gemini</small></div></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">🔑 API Key de Gemini</span></div>
+        <div class="card-body">
+          <div class="fg"><label class="fl">Gemini API Key</label><input class="fi" type="password" id="g-key" placeholder="AIzaSy..."></div>
+          <div class="fg"><label class="fl">Modelo</label>
+            <select class="fi" id="g-model">
+              <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest (recomendado · rápido)</option>
+              <option value="gemini-1.5-pro">gemini-1.5-pro (más potente)</option>
+              <option value="gemini-2.0-flash">gemini-2.0-flash (más nuevo)</option>
+            </select>
+          </div>
+          <button class="btn btn-grad btn-sm" onclick="guardarIA()">💾 Guardar config</button>
+          <div id="ia-status" style="margin-top:.75rem;font-size:12.5px;color:var(--k3)"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">🔌 Estado del sistema</span></div>
+        <div class="card-body">
+          <div class="srow"><div><div class="srow-t">Supabase DB</div><div class="srow-s">Base de datos</div></div><span class="bdg bdg-g">✓ Activo</span></div>
+          <div class="srow"><div><div class="srow-t">Auth</div><div class="srow-s">Supabase Auth</div></div><span class="bdg bdg-g">✓ Activo</span></div>
+          <div class="srow"><div><div class="srow-t">Mercado Pago</div><div class="srow-s">$30 MXN/mes</div></div><span class="bdg bdg-g">✓ Config</span></div>
+          <div class="srow"><div><div class="srow-t">Cloudinary</div><div class="srow-s">dpyuoswur</div></div><span class="bdg bdg-g">✓ Activo</span></div>
+          <div class="srow"><div><div class="srow-t">Gemini IA</div><div class="srow-s" id="g-status-txt">gemini-1.5-flash-latest</div></div><span class="bdg bdg-g" id="g-status-bdg">✓ Activo</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">🌿 Prompt de Alba</span></div>
+      <div class="card-body">
+        <div class="fg"><label class="fl">Instrucciones del sistema</label>
+          <textarea class="fi" id="alba-prompt" rows="8">Eres Alba, consultora personal de nutrición y organización del hogar de Pla.to.
+Personalidad: elegante, cálida, extremadamente práctica y proactiva.
+NUNCA menciones "IA" o "inteligencia artificial".
+Habla en español mexicano, directo y sofisticado.
+Cuando sugieras snacks o ingredientes, siempre pregunta si el usuario quiere guardarlo.
+Especialidades: menús familiares, presupuesto del super, restricciones dietéticas.
+Sé concisa — máximo 3-4 oraciones por respuesta.</textarea>
+        </div>
+        <button class="btn btn-grad btn-sm" onclick="guardarPrompt()">💾 Guardar prompt</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- MODAL USUARIO -->
+<div class="mover" id="m-u">
+  <div class="mbox">
+    <div class="mhdr"><div class="mtitle" id="m-u-t">Editar usuario</div><button class="mclose" onclick="cerrarM('m-u')">✕</button></div>
+    <div id="m-u-info" style="background:var(--bg2);border-radius:var(--r12);padding:.85rem 1rem;margin-bottom:1.25rem;font-size:13px;color:var(--k2);line-height:1.6"></div>
+    <div class="srow">
+      <div><div class="srow-t">Plan Pro activo</div><div class="srow-s">El usuario tiene acceso completo</div></div>
+      <label class="tog"><input type="checkbox" id="m-u-pro" onchange="togglePro()"><span class="tog-sl"></span></label>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+      <button class="btn btn-o btn-sm" onclick="extenderTrial()">📅 Extender trial 7 días</button>
+      <button class="btn btn-r btn-sm" onclick="eliminarU()">🗑 Eliminar usuario</button>
+    </div>
+    <div style="margin-top:1.25rem;display:flex;justify-content:flex-end">
+      <button class="btn btn-o btn-sm" onclick="cerrarM('m-u')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RECETA -->
+<div class="mover" id="m-r">
+  <div class="mbox">
+    <div class="mhdr"><div class="mtitle" id="m-r-t">Nueva receta base</div><button class="mclose" onclick="cerrarM('m-r')">✕</button></div>
+    <div class="fg"><label class="fl">Nombre *</label><input class="fi" id="nr-n" placeholder="Ej: Huevos rancheros"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <div class="fg"><label class="fl">Categoría *</label>
+        <select class="fi" id="nr-c">
+          <option value="">Selecciona...</option>
+          <option value="desayuno">Desayuno</option><option value="comida">Comida</option>
+          <option value="cena">Cena</option><option value="lunch">Lunch</option><option value="snack">Snack</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Tiempo (min)</label><input class="fi" type="number" id="nr-t" placeholder="30"></div>
+    </div>
+    <div class="fg"><label class="fl">Porciones base</label><input class="fi" type="number" id="nr-p" value="4" min="1" max="9"></div>
+    <div class="fg"><label class="fl">URL de foto</label><input class="fi" id="nr-f" placeholder="https://images.unsplash.com/..."></div>
+    <div class="fg"><label class="fl">Ingredientes (JSON)</label>
+      <textarea class="fi" id="nr-i" rows="5" placeholder='[{"nombre":"Huevo","cantidad":2,"unidad":"piezas","categoria":"Refrigerados"}]'></textarea>
+      <div style="font-size:11px;color:var(--k3);margin-top:.25rem">Formato: nombre, cantidad, unidad, categoria</div>
+    </div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem">
+      <button class="btn btn-o btn-sm" onclick="cerrarM('m-r')">Cancelar</button>
+      <button class="btn btn-grad btn-sm" onclick="guardarRecetaBase()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const{createClient}=supabase;
+const db=createClient('https://nzlqkeffnamynvuxoaag.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56bHFrZWZmbmFteW52dXhvYWFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMDc4OTcsImV4cCI6MjA5Mzc4Mzg5N30.4GXVvCf1a8VJ7cExQprnRPUXIDnf4xNbPqQgew5qjPE');
+const ADMIN='luiscomercializadora31@gmail.com';
+let todosU=[],todosP=[],todasR=[],uEdit=null;
+
+(async function(){
+  const{data}=await db.auth.getSession();
+  if(!data.session){window.location.href='index.html';return;}
+  if(data.session.user.email!==ADMIN){window.location.href='index.html';return;}
+  document.getElementById('admin-name').textContent=data.session.user.email.split('@')[0];
+  cargarTodo();
+})();
+
+let toastT;
+function toast(msg,tipo=''){const el=document.getElementById('toast');el.textContent=msg;el.className='on'+(tipo?' '+tipo:'');clearTimeout(toastT);toastT=setTimeout(()=>el.className='',3500);}
+function cerrarM(id){document.getElementById(id).classList.remove('on');}
+function abrirM(id){document.getElementById(id).classList.add('on');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('mover'))e.target.classList.remove('on');});
+
+function navTo(sec,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.sideitem').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sec-'+sec).classList.add('on');
+  if(btn)btn.classList.add('on');
+  if(sec==='usuarios')cargarUsuarios();
+  if(sec==='pagos')cargarPagos();
+  if(sec==='recetas')cargarRecetasAdmin();
+}
+
+async function cargarTodo(){
+  const ahora=new Date();
+  document.getElementById('dash-fecha').textContent='Actualizado '+ahora.toLocaleDateString('es-MX',{day:'numeric',month:'long'})+' a las '+ahora.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  await Promise.all([cargarStats(),cargarRecientes(),cargarGrafica()]);
+}
+
+async function cargarStats(){
+  try{
+    const{data:us}=await db.from('usuarios').select('id,plan,trial_hasta,created_at');
+    const ahora=new Date();
+    const total=us?.length||0;
+    const pro=(us||[]).filter(u=>u.plan==='pro').length;
+    const trial=(us||[]).filter(u=>u.plan==='free'&&u.trial_hasta&&new Date(u.trial_hasta)>ahora).length;
+    const ini=new Date();ini.setDate(1);ini.setHours(0,0,0,0);
+    const{data:pm}=await db.from('pagos').select('monto').eq('status','approved').gte('created_at',ini.toISOString());
+    const mrr=(pm||[]).reduce((s,p)=>s+(Number(p.monto)||0),0);
+    document.getElementById('s-total').textContent=total;
+    document.getElementById('s-pro').textContent=pro;
+    document.getElementById('s-trial').textContent=trial;
+    document.getElementById('s-mrr').textContent='$'+mrr.toLocaleString('es-MX');
+    document.getElementById('s-total-d').textContent=total+' registrados';
+    document.getElementById('s-pro-d').textContent='$'+mrr+' MRR';
+    document.getElementById('s-trial-d').textContent=trial+' activos';
+    document.getElementById('s-mrr-d').textContent=pro+' suscriptores';
+    document.getElementById('badge-u').textContent=total;
+    const expirados=Math.max(0,total-pro-trial);
+    document.getElementById('dist-planes').innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:.9rem;padding:.25rem 0">
+        <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:.3rem"><span style="font-weight:600">Pro activos</span><span style="color:var(--p);font-weight:700">${pro}</span></div><div class="pbar"><div class="pfill" style="width:${total?Math.round((pro/total)*100):0}%;background:var(--p)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:.3rem"><span style="font-weight:600">Trial activo</span><span style="color:var(--a);font-weight:700">${trial}</span></div><div class="pbar"><div class="pfill" style="width:${total?Math.round((trial/total)*100):0}%;background:var(--a)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:.3rem"><span style="font-weight:600">Trial expirado</span><span style="color:var(--r);font-weight:700">${expirados}</span></div><div class="pbar"><div class="pfill" style="width:${total?Math.round((expirados/total)*100):0}%;background:var(--r)"></div></div></div>
+      </div>`;
+  }catch(e){console.error('Stats:',e);}
+}
+
+async function cargarGrafica(){
+  try{
+    const dias=[],labels=[];const ahora=new Date();
+    for(let i=6;i>=0;i--){
+      const d=new Date(ahora);d.setDate(d.getDate()-i);
+      const ini=new Date(d);ini.setHours(0,0,0,0);
+      const fin=new Date(d);fin.setHours(23,59,59,999);
+      const{data}=await db.from('usuarios').select('id').gte('created_at',ini.toISOString()).lte('created_at',fin.toISOString());
+      dias.push(data?.length||0);
+      labels.push(d.toLocaleDateString('es-MX',{weekday:'short'}));
+    }
+    const max=Math.max(...dias,1);
+    document.getElementById('bchart').innerHTML=dias.map((v,i)=>`<div class="bbar${i===dias.length-1?' hi':''}" style="height:${Math.max(4,Math.round((v/max)*100))}%">${v>0?`<span class="bval">${v}</span>`:''}</div>`).join('');
+    document.getElementById('blbls').innerHTML=labels.map(l=>`<span class="blbl" style="flex:1">${l}</span>`).join('');
+  }catch(e){document.getElementById('bchart').innerHTML='<div class="empty"><span class="empty-ico">📊</span><div class="empty-t">Sin datos</div></div>';}
+}
+
+async function cargarRecientes(){
+  try{
+    const{data}=await db.from('usuarios').select('*').order('created_at',{ascending:false}).limit(8);
+    const tbody=document.getElementById('tbody-recientes');
+    if(!data?.length){tbody.innerHTML='<tr><td colspan="5"><div class="empty"><span class="empty-ico">👥</span><div class="empty-t">Sin usuarios aún</div></div></td></tr>';return;}
+    tbody.innerHTML=data.map(u=>filaU(u,false)).join('');
+  }catch(e){console.error('Recientes:',e);}
+}
+
+async function cargarUsuarios(){
+  const tbody=document.getElementById('tbody-u');
+  tbody.innerHTML='<tr><td colspan="6"><div class="ld"><div class="spinner"></div><span>Cargando...</span></div></td></tr>';
+  try{
+    const{data,error}=await db.from('usuarios').select('*').order('created_at',{ascending:false});
+    if(error)throw error;
+    todosU=data||[];
+    document.getElementById('u-count').textContent=todosU.length+' usuarios';
+    document.getElementById('badge-u').textContent=todosU.length;
+    renderU(todosU);
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6"><div class="empty"><span class="empty-ico">⚠️</span><div class="empty-t">Error: ${e.message}</div></div></td></tr>`;}
+}
+
+function filaU(u,acciones=true){
+  const ahora=new Date();
+  const esPro=u.plan==='pro';
+  const esTrial=u.plan==='free'&&u.trial_hasta&&new Date(u.trial_hasta)>ahora;
+  const planBdg=esPro?'<span class="bdg bdg-p">Pro</span>':esTrial?'<span class="bdg bdg-a">Trial</span>':'<span class="bdg bdg-r">Expirado</span>';
+  const trialFmt=u.trial_hasta?new Date(u.trial_hasta).toLocaleDateString('es-MX',{day:'numeric',month:'short'}):'—';
+  const regFmt=new Date(u.created_at).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'2-digit'});
+  if(!acciones)return`<tr><td><div style="font-weight:600">${u.nombre||'Sin nombre'}</div><div style="font-size:11.5px;color:var(--k3)">${u.email}</div></td><td>${planBdg}</td><td>${trialFmt}</td><td>${regFmt}</td><td><span class="bdg ${esPro||esTrial?'bdg-g':'bdg-r'}">${esPro||esTrial?'Activo':'Inactivo'}</span></td></tr>`;
+  return`<tr><td><div style="font-weight:600">${u.nombre||'Sin nombre'}</div><div style="font-size:11.5px;color:var(--k3)">${u.email}</div></td><td style="font-size:12px">${u.personas||4}</td><td>${planBdg}</td><td style="font-size:12px;color:var(--k3)">${trialFmt}</td><td style="font-size:12px;color:var(--k3)">${regFmt}</td><td><button class="btn btn-o btn-xs" onclick="abrirU('${u.id}')">Editar</button></td></tr>`;
+}
+
+function renderU(lista){
+  const tbody=document.getElementById('tbody-u');
+  if(!lista?.length){tbody.innerHTML='<tr><td colspan="6"><div class="empty"><span class="empty-ico">👥</span><div class="empty-t">Sin usuarios</div></div></td></tr>';return;}
+  tbody.innerHTML=lista.map(u=>filaU(u,true)).join('');
+}
+
+function filtrarU(){
+  const q=document.getElementById('f-buscar').value.toLowerCase();
+  const plan=document.getElementById('f-plan').value;
+  renderU(todosU.filter(u=>(!q||(u.nombre||'').toLowerCase().includes(q)||u.email.toLowerCase().includes(q))&&(!plan||u.plan===plan)));
+}
+
+function abrirU(id){
+  uEdit=todosU.find(u=>u.id===id);if(!uEdit)return;
+  document.getElementById('m-u-t').textContent='Editar usuario';
+  document.getElementById('m-u-info').innerHTML=`<strong>${uEdit.nombre||'Sin nombre'}</strong><br><span style="color:var(--k3)">${uEdit.email}</span><br><span style="font-size:12px;color:var(--k3)">Registro: ${new Date(uEdit.created_at).toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'})}</span>`;
+  document.getElementById('m-u-pro').checked=uEdit.plan==='pro';
+  abrirM('m-u');
+}
+
+async function togglePro(){
+  if(!uEdit)return;
+  const esPro=document.getElementById('m-u-pro').checked;
+  const{error}=await db.from('usuarios').update({plan:esPro?'pro':'free'}).eq('id',uEdit.id);
+  if(error){toast('Error: '+error.message,'err');return;}
+  uEdit.plan=esPro?'pro':'free';
+  toast(esPro?'✅ Plan Pro activado':'Plan cambiado a Free');
+  cargarUsuarios();cargarStats();
+}
+
+async function extenderTrial(){
+  if(!uEdit)return;
+  const actual=uEdit.trial_hasta?new Date(uEdit.trial_hasta):new Date();
+  const nueva=new Date(Math.max(actual,new Date()));
+  nueva.setDate(nueva.getDate()+7);
+  const{error}=await db.from('usuarios').update({trial_hasta:nueva.toISOString()}).eq('id',uEdit.id);
+  if(error){toast('Error: '+error.message,'err');return;}
+  toast('✅ Trial extendido 7 días');cerrarM('m-u');cargarUsuarios();
+}
+
+async function eliminarU(){
+  if(!uEdit)return;
+  if(!confirm(`¿Eliminar a "${uEdit.nombre||uEdit.email}"?\nEsta acción no se puede deshacer.`))return;
+  const{error}=await db.from('usuarios').delete().eq('id',uEdit.id);
+  if(error){toast('Error: '+error.message,'err');return;}
+  toast('✅ Usuario eliminado');cerrarM('m-u');cargarUsuarios();cargarStats();
+}
+
+async function cargarPagos(){
+  const tbody=document.getElementById('tbody-p');
+  tbody.innerHTML='<tr><td colspan="5"><div class="ld"><div class="spinner"></div></div></td></tr>';
+  try{
+    const{data,error}=await db.from('pagos').select('*, usuarios(nombre,email)').order('created_at',{ascending:false});
+    if(error)throw error;
+    todosP=data||[];
+    document.getElementById('p-count').textContent=todosP.length+' pagos';
+    const aprobados=todosP.filter(p=>p.status==='approved');
+    const total=aprobados.reduce((s,p)=>s+(Number(p.monto)||0),0);
+    const ini=new Date();ini.setDate(1);ini.setHours(0,0,0,0);
+    const mes=aprobados.filter(p=>new Date(p.created_at)>=ini).reduce((s,p)=>s+(Number(p.monto)||0),0);
+    document.getElementById('p-mes').textContent='$'+mes.toLocaleString('es-MX');
+    document.getElementById('p-cnt').textContent=aprobados.length;
+    document.getElementById('p-avg').textContent=aprobados.length?'$'+(total/aprobados.length).toFixed(0):'$0';
+    if(!todosP.length){tbody.innerHTML='<tr><td colspan="5"><div class="empty"><span class="empty-ico">💳</span><div class="empty-t">Sin pagos aún</div></div></td></tr>';return;}
+    tbody.innerHTML=todosP.map(p=>`<tr>
+      <td><div style="font-weight:600">${p.usuarios?.nombre||'—'}</div><div style="font-size:11.5px;color:var(--k3)">${p.usuarios?.email||'—'}</div></td>
+      <td style="font-weight:700;color:var(--g)">$${Number(p.monto||0).toLocaleString('es-MX')} ${p.moneda||'MXN'}</td>
+      <td>${p.status==='approved'?'<span class="bdg bdg-g">Aprobado</span>':p.status==='pending'?'<span class="bdg bdg-a">Pendiente</span>':'<span class="bdg bdg-r">'+p.status+'</span>'}</td>
+      <td style="font-size:11px;color:var(--k3);font-family:monospace">${p.mp_payment_id||'—'}</td>
+      <td style="font-size:12px;color:var(--k3)">${new Date(p.created_at).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'2-digit'})}</td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="5"><div class="empty"><span class="empty-ico">⚠️</span><div class="empty-t">Error: ${e.message}</div></div></td></tr>`;}
+}
+
+async function cargarRecetasAdmin(){
+  const tbody=document.getElementById('tbody-r');
+  tbody.innerHTML='<tr><td colspan="6"><div class="ld"><div class="spinner"></div></div></td></tr>';
+  try{
+    const{data,error}=await db.from('recetas_sistema').select('*').order('nombre');
+    if(error)throw error;
+    todasR=data||[];
+    document.getElementById('r-count').textContent=todasR.length+' recetas base';
+    renderR(todasR);
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6"><div class="empty"><span class="empty-ico">⚠️</span><div class="empty-t">Error: ${e.message}</div></div></td></tr>`;}
+}
+
+function renderR(lista){
+  const tbody=document.getElementById('tbody-r');
+  const cats={desayuno:'<span class="bdg bdg-a">Desayuno</span>',comida:'<span class="bdg bdg-g">Comida</span>',cena:'<span class="bdg bdg-p">Cena</span>',lunch:'<span class="bdg bdg-gray">Lunch</span>',snack:'<span class="bdg bdg-pk">Snack</span>'};
+  if(!lista?.length){tbody.innerHTML='<tr><td colspan="6"><div class="empty"><span class="empty-ico">📖</span><div class="empty-t">Sin recetas base</div><div class="empty-t" style="font-size:12px;font-weight:400">Agrega recetas que todos los usuarios verán</div></div></td></tr>';return;}
+  tbody.innerHTML=lista.map(r=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:.6rem">${r.foto_url?`<img src="${r.foto_url}" style="width:36px;height:36px;border-radius:var(--r8);object-fit:cover" onerror="this.style.display='none'">`:''}<span style="font-weight:600">${r.nombre}</span></div></td>
+    <td>${cats[r.categoria]||r.categoria}</td>
+    <td>${r.porciones_base||4}</td>
+    <td>${Array.isArray(r.ingredientes)?r.ingredientes.length:0}</td>
+    <td>${r.activa?'<span class="bdg bdg-g">Activa</span>':'<span class="bdg bdg-r">Inactiva</span>'}</td>
+    <td><button class="btn btn-o btn-xs" onclick="editarR('${r.id}')">Editar</button> <button class="btn btn-r btn-xs" style="margin-left:.25rem" onclick="eliminarR('${r.id}','${r.nombre.replace(/'/g,"\\'")}')">✕</button></td>
+  </tr>`).join('');
+}
+
+function filtrarR(q){renderR(todasR.filter(r=>!q||r.nombre.toLowerCase().includes(q.toLowerCase())));}
+function filtrarRcat(cat){renderR(todasR.filter(r=>!cat||r.categoria===cat));}
+
+function abrirNuevaReceta(){
+  document.getElementById('m-r-t').textContent='Nueva receta base';
+  ['n','c','t','f','i'].forEach(f=>document.getElementById('nr-'+f).value=f==='p'?'4':'');
+  document.getElementById('nr-p').value='4';
+  delete document.getElementById('m-r').dataset.editId;
+  abrirM('m-r');
+}
+
+function editarR(id){
+  const r=todasR.find(x=>x.id===id);if(!r)return;
+  document.getElementById('m-r-t').textContent='Editar receta';
+  document.getElementById('nr-n').value=r.nombre||'';
+  document.getElementById('nr-c').value=r.categoria||'';
+  document.getElementById('nr-t').value=r.tiempo_min||'';
+  document.getElementById('nr-p').value=r.porciones_base||4;
+  document.getElementById('nr-f').value=r.foto_url||'';
+  document.getElementById('nr-i').value=JSON.stringify(r.ingredientes||[],null,2);
+  document.getElementById('m-r').dataset.editId=id;
+  abrirM('m-r');
+}
+
+async function guardarRecetaBase(){
+  const nombre=document.getElementById('nr-n').value.trim();
+  const categoria=document.getElementById('nr-c').value;
+  if(!nombre||!categoria){toast('Nombre y categoría son obligatorios','err');return;}
+  let ingredientes=[];
+  try{const raw=document.getElementById('nr-i').value.trim();if(raw)ingredientes=JSON.parse(raw);}
+  catch(e){toast('El JSON de ingredientes no es válido','err');return;}
+  const datos={nombre,categoria,tiempo_min:parseInt(document.getElementById('nr-t').value)||null,porciones_base:parseInt(document.getElementById('nr-p').value)||4,foto_url:document.getElementById('nr-f').value.trim()||null,ingredientes,activa:true};
+  const editId=document.getElementById('m-r').dataset.editId;
+  let error;
+  if(editId){({error}=await db.from('recetas_sistema').update(datos).eq('id',editId));}
+  else{({error}=await db.from('recetas_sistema').insert(datos));}
+  if(error){toast('Error: '+error.message,'err');return;}
+  toast('✅ Receta guardada','ok');cerrarM('m-r');cargarRecetasAdmin();
+}
+
+async function eliminarR(id,nombre){
+  if(!confirm(`¿Eliminar "${nombre}"?`))return;
+  const{error}=await db.from('recetas_sistema').delete().eq('id',id);
+  if(error){toast('Error: '+error.message,'err');return;}
+  toast('✅ Receta eliminada');cargarRecetasAdmin();
+}
+
+function guardarIA(){
+  const key=document.getElementById('g-key').value.trim();
+  const model=document.getElementById('g-model').value;
+  if(!key){toast('Pega tu API key','err');return;}
+  localStorage.setItem('plato_gemini_key',key);
+  localStorage.setItem('plato_gemini_model',model);
+  document.getElementById('ia-status').innerHTML='<span style="color:var(--g);font-weight:600">✅ Configuración guardada</span>';
+  document.getElementById('g-status-txt').textContent=model;
+  toast('✅ Config IA guardada','ok');
+}
+
+function guardarPrompt(){
+  const p=document.getElementById('alba-prompt').value.trim();
+  if(!p){toast('El prompt no puede estar vacío','err');return;}
+  localStorage.setItem('plato_alba_prompt',p);
+  toast('✅ Prompt guardado','ok');
+}
+
+async function exportarCSV(){
+  if(!todosU.length)await cargarUsuarios();
+  const rows=[['Nombre','Email','Plan','Personas','Trial hasta','Registro'],...todosU.map(u=>[u.nombre||'',u.email,u.plan,u.personas||4,u.trial_hasta?new Date(u.trial_hasta).toLocaleDateString('es-MX'):'—',new Date(u.created_at).toLocaleDateString('es-MX')])];
+  const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='plato-usuarios-'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  toast('📥 CSV descargado','ok');
+}
+
+async function doLogout(){await db.auth.signOut();window.location.href='index.html';}
+</script>
+</body>
+</html>
